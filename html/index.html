@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../css/style.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/1173bca6e6.js" crossorigin="anonymous"></script>
+</head>
+<body class="flex flex-col items-center">
+  <header class="w-full max-w-[1440px] bg-headerImage bg-cover pt-12 pb-48">
+    <img class="ml-16" src="/assets/svg/logo.svg" alt="logo">
+
+    <h1 class="font-anton text-5xl text-yellow text-center pt-48 pb-7">CHERCHEZ PARMI PLUS DE 1500 RECETTES<br>DU QUOTIDIEN,SIMPLES ET DÉLICIEUSES</h1>
+
+    <div class="flex justify-center">
+      <div class="relative h-16 w-2/3">
+        <input class="w-full h-full rounded-xl pl-9 font-manrope placeholder:text-grey" type="text" placeholder="Rechercher une recette, un ingrédient, ...">
+        <button class="absolute right-2 top-2 bg-black w-12 h-12 flex justify-center items-center rounded-lg"><img class="w-7 h-7" src="/assets/svg/magnifyingGlass.svg" alt=""></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="w-full max-w-[1440px] bg-light_grey pb-16 px-24">
+    <nav class="flex items-center justify-between">
+      <ul class="flex gap-16 font-manrope py-5">
+        <li class="relative">
+            <button class="dropdownBtn" type="button">Ingrédients <span class="fa-solid fa-angle-down"></span></button>
+
+            <div class="dropdownMenu z-10 invisible">
+              <button class="dropdownMenu-btn" type="button">Ingrédients <span class="fa-solid fa-angle-up"></span></button>
+              <input class="dropdownMenu-input" type="text">
+              <ul class="mt-6 text-sm">
+                <li class="mb-3">Jus de citron</li>
+                <li class="mb-3">Glaçons</li>
+                <li class="mb-3" >Tomate</li>
+                <li class="mb-3">Poulet</li>
+                <li class="mb-3">Poivron rouge</li>
+                <li class="mb-3">Thon en miettes</li>
+                <li class="mb-3">Vinaigrette</li>
+              </ul>
+            </div>
+        </li>
+        
+        <li class="relative">
+            <button class="dropdownBtn dropdown-open" type="button">Appareils <span class="fa-solid fa-angle-down"></span></button>
+
+            <div class="dropdownMenu z-10 invisible">
+              <button class="dropdownMenu-btn" type="button">Appareils <span class="fa-solid fa-angle-up"></span></button>
+              <input class="dropdownMenu-input" type="text">
+              <ul class="mt-6 text-sm">
+                <li class="mb-3">Batteur</li>
+                <li class="mb-3">Cookéo</li>
+                <li class="mb-3" >Thermomix</li>
+              </ul>
+            </div>
+        </li>
+        
+        <li class="relative">
+            <button class="dropdownBtn dropdown-open" type="button">Ustensiles <span class="fa-solid fa-angle-down"></span></button>
+
+            <div class="dropdownMenu z-10 invisible">
+              <button class="dropdownMenu-btn" type="button">Ustensiles <span class="fa-solid fa-angle-up"></span></button>
+              <input class="dropdownMenu-input" type="text">
+              <ul class="mt-6 text-sm">
+                <li class="mb-3">Batteur</li>
+                <li class="mb-3">Cookéo</li>
+                <li class="mb-3" >Thermomix</li>
+              </ul>
+            </div>
+        </li>
+      </ul>
+      <p class="font-anton text-xl">1500 recettes</p>
+    </nav>
+    
+    <div class="flex justify-between">
+      <div class="card">
+        <img class="w-full h-64 object-cover"src="/assets/photos/Recette02.jpg" alt="Assiette de salade tahitienne">
+        <div class="mx-6">
+          <h2 class="font-anton text-lg mt-8">Poisson cru à la tahitienne</h2>
+          <h3>RECETTE</h3>
+          <p class="mt-4 font-manrope text-sm">Découper le thon en dés, le mettre dans un plat et le recouvrir de jus de citron vert (mieux vaut prendre un plat large et peu profond). Laisser reposer au réfrigérateur au moins 2 heures.</p>
+          <h3>INGRÉDIENTS</h3>
+          <ul class="font-manrope text-sm flex flex-wrap">
+            <li><p class="card-ingredient">Thon Rouge</p><p class="text-grey">200g</p></li>
+            <li><p class="card-ingredient">Concombre</p><p class="text-grey">1</p></li>
+            <li><p class="card-ingredient">Tomate</p><p class="text-grey">2</p></li>
+            <li><p class="card-ingredient">Citron vert</p><p class="text-grey">5</p></li>
+            <li><p class="card-ingredient">Carotte</p><p class="text-grey">1</p></li>
+            <li><p class="card-ingredient">Lait de coco</p><p class="text-grey">100ml</p></li>
+          </ul>
+        </div>
+        <span class="card-badge">10mn</span>
+      </div>
+
+      <div class="card">
+        <img class="w-full h-64 object-cover"src="/assets/photos/Recette02.jpg" alt="Assiette de salade tahitienne">
+        <div class="mx-6">
+          <h2 class="font-anton text-lg mt-8">Poisson cru à la tahitienne</h2>
+          <h3>RECETTE</h3>
+          <p class="mt-4 font-manrope text-sm">Découper le thon en dés, le mettre dans un plat et le recouvrir de jus de citron vert (mieux vaut prendre un plat large et peu profond). Laisser reposer au réfrigérateur au moins 2 heures.</p>
+          <h3>INGRÉDIENTS</h3>
+          <ul class="font-manrope text-sm flex flex-wrap">
+            <li><p class="card-ingredient">Thon Rouge</p><p class="text-grey">200g</p></li>
+            <li><p class="card-ingredient">Concombre</p><p class="text-grey">1</p></li>
+            <li><p class="card-ingredient">Tomate</p><p class="text-grey">2</p></li>
+            <li><p class="card-ingredient">Citron vert</p><p class="text-grey">5</p></li>
+            <li><p class="card-ingredient">Carotte</p><p class="text-grey">1</p></li>
+            <li><p class="card-ingredient">Lait de coco</p><p class="text-grey">100ml</p></li>
+          </ul>
+        </div>
+        <span class="card-badge">10mn</span>
+      </div>
+
+      <div class="card">
+        <img class="w-full h-64 object-cover"src="/assets/photos/Recette02.jpg" alt="Assiette de salade tahitienne">
+        <div class="mx-6">
+          <h2 class="font-anton text-lg mt-8">Poisson cru à la tahitienne</h2>
+          <h3>RECETTE</h3>
+          <p class="mt-4 font-manrope text-sm">Découper le thon en dés, le mettre dans un plat et le recouvrir de jus de citron vert (mieux vaut prendre un plat large et peu profond). Laisser reposer au réfrigérateur au moins 2 heures.</p>
+          <h3>INGRÉDIENTS</h3>
+          <ul class="font-manrope text-sm flex flex-wrap">
+            <li><p class="card-ingredient">Thon Rouge</p><p class="text-grey">200g</p></li>
+            <li><p class="card-ingredient">Concombre</p><p class="text-grey">1</p></li>
+            <li><p class="card-ingredient">Tomate</p><p class="text-grey">2</p></li>
+            <li><p class="card-ingredient">Citron vert</p><p class="text-grey">5</p></li>
+            <li><p class="card-ingredient">Carotte</p><p class="text-grey">1</p></li>
+            <li><p class="card-ingredient">Lait de coco</p><p class="text-grey">100ml</p></li>
+          </ul>
+        </div>
+        <span class="card-badge">10mn</span>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@200..800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.dropdownBtn {
+    @apply bg-white font-medium w-48 h-14 flex justify-between items-center px-4 rounded-lg;
+}
+
+.dropdownMenu {
+    @apply w-48 max-h-80 px-4 bg-white rounded-lg absolute top-0 overflow-hidden;
+}
+
+.dropdownMenu-btn {
+    @apply mt-4 font-medium w-40 flex justify-between items-center;
+}
+
+.dropdownMenu-input {
+    @apply mt-3.5 w-full h-9 border-light_grey border-solid border rounded-sm;
+}
+
+h3 {
+    @apply mt-7 text-grey font-manrope text-xs font-bold;
+}
+
+.card {
+    @apply w-96 bg-white rounded-lg overflow-hidden pb-16 relative;
+}
+
+.card-ingredient {
+    @apply w-40 mt-4 font-medium;
+}
+
+.card-badge {
+    @apply bg-yellow py-1 px-3.5 rounded-full font-manrope text-xs absolute top-5 right-5;
+}
