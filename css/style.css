@@ -572,12 +572,16 @@ video {
   right: 0.5rem;
 }
 
+.right-5{
+  right: 1.25rem;
+}
+
 .top-2{
   top: 0.5rem;
 }
 
-.z-0{
-  z-index: 0;
+.top-5{
+  top: 1.25rem;
 }
 
 .z-10{
@@ -605,6 +609,10 @@ video {
   margin-top: 1.5rem;
 }
 
+.mt-7{
+  margin-top: 1.75rem;
+}
+
 .mt-8{
   margin-top: 2rem;
 }
@@ -619,6 +627,10 @@ video {
 
 .h-16{
   height: 4rem;
+}
+
+.h-20{
+  height: 5rem;
 }
 
 .h-64{
@@ -641,8 +653,16 @@ video {
   width: 66.666667%;
 }
 
+.w-40{
+  width: 10rem;
+}
+
 .w-7{
   width: 1.75rem;
+}
+
+.w-96{
+  width: 24rem;
 }
 
 .w-full{
@@ -677,6 +697,14 @@ video {
   gap: 4rem;
 }
 
+.overflow-hidden{
+  overflow: hidden;
+}
+
+.rounded-full{
+  border-radius: 9999px;
+}
+
 .rounded-lg{
   border-radius: 0.5rem;
 }
@@ -695,6 +723,16 @@ video {
   background-color: rgb(198 198 198 / var(--tw-bg-opacity));
 }
 
+.bg-white{
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.bg-yellow{
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 209 91 / var(--tw-bg-opacity));
+}
+
 .bg-headerImage{
   background-image: url('/assets/photos/Recette42.jpg');
 }
@@ -711,6 +749,21 @@ video {
 .px-24{
   padding-left: 6rem;
   padding-right: 6rem;
+}
+
+.px-3{
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.px-3\.5{
+  padding-left: 0.875rem;
+  padding-right: 0.875rem;
+}
+
+.py-1{
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 
 .py-5{
@@ -772,6 +825,19 @@ video {
   font-size: 1.313;
 }
 
+.text-xs{
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.font-bold{
+  font-weight: 700;
+}
+
+.font-medium{
+  font-weight: 500;
+}
+
 .text-grey{
   --tw-text-opacity: 1;
   color: rgb(122 122 122 / var(--tw-text-opacity));
@@ -827,48 +893,6 @@ video {
   border-style: solid;
   --tw-border-opacity: 1;
   border-color: rgb(198 198 198 / var(--tw-border-opacity));
-}
-
-h3{
-  margin-top: 1.75rem;
-  font-family: Manrope, sans-serif;
-  font-size: 0.75rem;
-  line-height: 1rem;
-  font-weight: 700;
-  --tw-text-opacity: 1;
-  color: rgb(122 122 122 / var(--tw-text-opacity));
-}
-
-.card{
-  position: relative;
-  width: 24rem;
-  overflow: hidden;
-  border-radius: 0.5rem;
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-  padding-bottom: 4rem;
-}
-
-.card-ingredient{
-  margin-top: 1rem;
-  width: 10rem;
-  font-weight: 500;
-}
-
-.card-badge{
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  border-radius: 9999px;
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 209 91 / var(--tw-bg-opacity));
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  padding-left: 0.875rem;
-  padding-right: 0.875rem;
-  font-family: Manrope, sans-serif;
-  font-size: 0.75rem;
-  line-height: 1rem;
 }
 
 .placeholder\:text-grey::-moz-placeholder{
