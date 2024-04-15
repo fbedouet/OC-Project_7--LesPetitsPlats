@@ -1,4 +1,4 @@
-import {RecipeCard} from './components.js'
+import {RecipeCard, Dropdown, SearchInput} from './components.js'
 
 const dataJson = [
     {
@@ -1781,14 +1781,73 @@ const dataJson = [
     }
 ]
 
+const getIngredientsOfRecipes = (recipesData) => {
+    const IngredientsWithDoubles = Object.values(recipesData).reduce((acc,recipe)=>{
+        const ingredients = recipe.ingredients.map(elt=>elt.ingredient)
+        acc= acc.concat(ingredients)
+        return acc
+    },[])
+
+    const ingredientsAllRecipes = IngredientsWithDoubles.reduce((acc,ing)=>{
+        if(acc.indexOf(ing)===-1){
+            acc.push(ing)
+        }
+        return acc
+    },[])
+    return ingredientsAllRecipes
+}
+
+const getUstensilsOfRecipes = (recipesData)=>{
+    const ustensilsWithDoubles = Object.values(recipesData).reduce((acc,recipe)=>{
+        return acc.concat(recipe.ustensils)
+    },[])
+    const ustensilsAllRecipes = ustensilsWithDoubles.reduce((acc,ing)=>{
+        if(acc.indexOf(ing)===-1){
+            acc.push(ing)
+        }
+        return acc
+    },[])
+    return ustensilsAllRecipes
+}
+
+const getApplianceOfRecipes = (recipesData)=>{
+    const  appliancesWithDoubles = Object.values(recipesData).map(recipe=>recipe.appliance)
+    const appliancesAllRecipes = appliancesWithDoubles.reduce((acc,ing)=>{
+        if(acc.indexOf(ing)===-1){
+            acc.push(ing)
+        }
+        return acc
+    },[])
+    return appliancesAllRecipes
+}
+
 function init (){
     const recipesById = dataJson.reduce((acc,recipe)=>{
         acc[recipe.id] = recipe
         return acc
     },{})
-    const searchResult = document.querySelector("main")
-    const cardContent = new RecipeCard(recipesById[23])
-    searchResult.appendChild(cardContent.component)
+
+    const searchResult = document.querySelector(".searchResult")
+    Object.keys(recipesById).forEach(id=>{
+        const cardContent = new RecipeCard(recipesById[id])
+        searchResult.appendChild(cardContent.component)
+    })
+
+    const allIngredients = getIngredientsOfRecipes(recipesById)
+    const allUstensiles = getUstensilsOfRecipes(recipesById)
+    const allAppliances = getApplianceOfRecipes(recipesById)
+
+    const divSearchInput = document.getElementById('inputSearch')
+    const searchInput = new SearchInput('Rechercher une recette, un ingrédient, ...','/assets/svg/magnifyingGlass.svg')
+    divSearchInput.appendChild(searchInput.component)
+
+    const navBar = document.querySelector("nav ul")
+    const ingredientsDropdown = new Dropdown('Ingrédients',allIngredients)
+    const unstensilesDropdown = new Dropdown('Ustensiles',allUstensiles)
+    const appliencesDropdown = new Dropdown('Appareils',allAppliances)
+    navBar.appendChild(ingredientsDropdown.component)
+    navBar.appendChild(appliencesDropdown.component)
+    navBar.appendChild(unstensilesDropdown.component)
 }
 
 init()
