@@ -1783,7 +1783,10 @@ const dataJson = [
 
 const getIngredientsOfRecipes = (recipesData) => {
     const IngredientsWithDoubles = Object.values(recipesData).reduce((acc,recipe)=>{
-        const ingredients = recipe.ingredients.map(elt=>elt.ingredient)
+        const ingredients = recipe.ingredients.map(elt=>{
+            const formatedIngredient = elt.ingredient.toLowerCase()
+            return formatedIngredient[0].toUpperCase()+formatedIngredient.slice(1)
+        })
         acc= acc.concat(ingredients)
         return acc
     },[])
@@ -1842,12 +1845,12 @@ function init (){
     divSearchInput.appendChild(searchInput.component)
 
     const navBar = document.querySelector("nav ul")
-    const ingredientsDropdown = new Dropdown('Ingrédients',allIngredients)
-    const unstensilesDropdown = new Dropdown('Ustensiles',allUstensiles)
-    const appliencesDropdown = new Dropdown('Appareils',allAppliances)
-    navBar.appendChild(ingredientsDropdown.component)
-    navBar.appendChild(appliencesDropdown.component)
-    navBar.appendChild(unstensilesDropdown.component)
+    const ingredientsDropdown = new Dropdown('Ingrédients','ingredientsDropdown',allIngredients)
+    const ustensilesDropdown = new Dropdown('Ustensiles','unstensilesDropdown',allUstensiles)
+    const appliencesDropdown = new Dropdown('Appareils','appliencesDropdown',allAppliances)
+    navBar.appendChild(ingredientsDropdown.createComponent)
+    navBar.appendChild(appliencesDropdown.createComponent)
+    navBar.appendChild(ustensilesDropdown.createComponent)
 }
 
 init()

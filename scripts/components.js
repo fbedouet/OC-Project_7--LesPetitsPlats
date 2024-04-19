@@ -44,14 +44,21 @@ class RecipeCard {
 }
 
 class Dropdown {
-    constructor (title, data){
+    constructor (title, idName, dataList){
         this._title = title
-        this._list = data
+        this._list = dataList
+        this.selectedItemsList = []
+        this._isItemsSelected = false
+        this._id = idName 
+
+        //Tailwind CSS
         this._btnClass = 'bg-white font-medium w-48 h-14 flex justify-between items-center px-4 rounded-lg'
-        this._menuClass = 'w-48 max-h-80 px-4 bg-white rounded-lg absolute top-0 z-10 overflow-hidden invisible'
-        this._menuBtnClass ='mt-4 font-medium w-40 flex justify-between items-center'
-        this._menuInputClass = 'mt-3.5 w-full h-9 border-light_grey border-solid border rounded-sm'
-        this._menuListClass = 'mt-6 text-sm overflow-y-scroll h-52'
+        this._menuClass = 'w-48 max-h-80 bg-white rounded-lg absolute top-0 z-10 overflow-hidden invisible'
+        this._menuBtnClass ='mt-4 font-medium w-40 flex justify-between items-center mx-4'
+        this._menuInputClass = 'mt-3.5 h-9 w-40 border-light_grey border-solid border rounded-sm ml-4'
+        this._selectedItemsClass = 'mt-4 pl-4 py-2 bg-yellow truncate'
+        this._menuListClass = 'mt-6 text-sm overflow-y-scroll h-52 '
+        this._itemListClass ='ml-4 mb-3 cursor-pointer'
     }
 
     _dropdownButton(){
@@ -61,13 +68,24 @@ class Dropdown {
         return btn
     }
 
+    _onItemClick(item){
+        if(!this._isItemsSelected){
+            this._addSelectedItem(item)
+            const arrayPosition = this._list.indexOf(item)
+            this._list.splice(arrayPosition,1)
+            this._changeListItems()
+            this._isItemsSelected = true
+        }
+    }
+
     _dropdownMenuList(){
         const list = document.createElement('ul')
         list.className = this._menuListClass
         this._list.forEach(elt=>{
             const item = document.createElement('li')
-            item.classList.add('mb-3')
+            item.className = this._itemListClass
             item.innerText=elt
+            item.addEventListener("click",(event)=>{this._onItemClick(event.target.innerText)})
             list.appendChild(item)
         })
         return list
@@ -76,6 +94,7 @@ class Dropdown {
     _dropdownMenu(){
         const div = document.createElement('div')
         div.className = this._menuClass
+        div.id = this._id
         const btn = document.createElement('button')
         btn.className = this._menuBtnClass
         btn.innerHTML=`${this._title} <span class="fa-solid fa-angle-up"></span>`
@@ -84,13 +103,16 @@ class Dropdown {
         })
         const input = document.createElement('input')
         input.className = this._menuInputClass
+        const selectedItems = document.createElement('p')
+        selectedItems.id = "selectedItems"
         div.appendChild(btn)
         div.appendChild(input)
+        div.appendChild(selectedItems)
         div.appendChild(this._dropdownMenuList())
         return div
     }
 
-    get component(){
+    get createComponent(){
         const li = document.createElement('li')
         const btn = this._dropdownButton()
         const menu = this._dropdownMenu()
@@ -103,29 +125,80 @@ class Dropdown {
         return li
     }
 
+    _changeListItems(){
+        const dropdownDiv = document.getElementById(this._id)
+        const ul = dropdownDiv.children[3]
+        ul.remove()
+        dropdownDiv.appendChild(this._dropdownMenuList())
+    }
+
+    _addSelectedItem(item){
+        const selectedItem = document.querySelector(`#${this._id} #selectedItems`)
+        selectedItem.className = this._selectedItemsClass
+        selectedItem.innerText = item
+        selectedItem.addEventListener("click", ()=> {
+            this._list.push(selectedItem.innerText)
+            selectedItem.innerText = ""
+            selectedItem.className=""
+            this._changeListItems()
+            this._isItemsSelected = false
+        })
+        this._isItemsSelected = true
+        return
+    }
 }
 
 class SearchInput {
     constructor(placeholder,srcImg){
         this._placeholder = placeholder
         this._srcImg = srcImg
+
+        //Tailwind CSS
         this._sizeClass = 'relative h-16 w-2/3'
-        this._inputClass = 'w-full h-full rounded-xl pl-9 font-manrope' //placeholder:text-grey'
-        this._btnClass = 'absolute right-2 top-2 bg-black w-12 h-12 flex justify-center items-center rounded-lg'
+        this._inputClass = 'w-full h-full rounded-xl pl-9 font-manrope'
+        this._searchBtnClass = 'absolute right-2 top-2 bg-black hover:bg-yellow w-12 h-12 flex justify-center items-center rounded-lg hover:*:stroke-black *:p-2'
+        this._magnifyingGlassClass='stroke-white'
+        this._resetCrossBtnClass = 'absolute right-20 top-5 font-manrope font-bold text-light_grey invisible'
     }
 
     get component(){
         const div = document.createElement('div')
         div.className = this._sizeClass
+
         const input = document.createElement('input')
         input.className = this._inputClass
         input.placeholder = this._placeholder
-        input.type = "search"
-        const btn = document.createElement('button')
-        btn.className = this._btnClass
-        btn.innerHTML=`<img class="w-7 h-7" src=${this._srcImg} alt=""></button>`
+        input.type = "text"
+        input.addEventListener("input",(event)=>{
+            if(event.target.value){
+                resetCrossBtn.classList.remove("invisible")
+                return
+            }
+            if(!resetCrossBtn.classList.contains("invisible")){
+                resetCrossBtn.classList.add("invisible")
+            }
+        })
+
+        const searchBtn = document.createElement('button')
+        searchBtn.className = this._searchBtnClass
+        searchBtn.innerHTML=`
+            <svg class=${this._magnifyingGlassClass} viewBox="0 0 28 29" fill="none">
+                <circle cx="10" cy="10.4219" r="9.5"/>
+                <line x1="18.3536" y1="19.0683" x2="27.3536" y2="28.0683"/>
+            </svg>
+        `
+        
+        const resetCrossBtn = document.createElement('button')
+        resetCrossBtn.className = this._resetCrossBtnClass
+        resetCrossBtn.innerHTML = `<span class="fa-solid fa-xmark"></span>`
+        resetCrossBtn.addEventListener("click",()=>{
+            input.value=""
+            resetCrossBtn.classList.add("invisible")
+        })
+
         div.appendChild(input)
-        div.appendChild(btn)
+        div.appendChild(searchBtn)
+        div.appendChild(resetCrossBtn)
         return div
     }
 
