@@ -3,19 +3,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* .dropdownBtn {
-    @apply bg-white font-medium w-48 h-14 flex justify-between items-center px-4 rounded-lg;
-} */
-
-/* .dropdownMenu {
-    @apply w-48 max-h-80 px-4 bg-white rounded-lg absolute top-0 overflow-hidden;
-} */
-
-/* .dropdownMenu-btn {
-    @apply mt-4 font-medium w-40 flex justify-between items-center;
-} */
-
-/* .dropdownMenu-input {
-    @apply mt-3.5 w-full h-9 border-light_grey border-solid border rounded-sm;
-} */

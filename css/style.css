@@ -568,6 +568,10 @@ video {
   position: relative;
 }
 
+.right-12{
+  right: 3rem;
+}
+
 .right-2{
   right: 0.5rem;
 }
@@ -580,6 +584,10 @@ video {
   right: 1.25rem;
 }
 
+.right-6{
+  right: 1.5rem;
+}
+
 .top-0{
   top: 0px;
 }
@@ -590,6 +598,14 @@ video {
 
 .top-5{
   top: 1.25rem;
+}
+
+.top-\[3\.95rem\]{
+  top: 3.95rem;
+}
+
+.top-\[4rem\]{
+  top: 4rem;
 }
 
 .z-10{
@@ -608,6 +624,10 @@ video {
 
 .mb-3{
   margin-bottom: 0.75rem;
+}
+
+.mb-5{
+  margin-bottom: 1.25rem;
 }
 
 .ml-16{
@@ -736,6 +756,11 @@ video {
 
 .gap-16{
   gap: 4rem;
+}
+
+.gap-x-5{
+  -moz-column-gap: 1.25rem;
+       column-gap: 1.25rem;
 }
 
 .gap-y-16{
@@ -869,6 +894,10 @@ video {
   padding-bottom: 1.75rem;
 }
 
+.pl-2{
+  padding-left: 0.5rem;
+}
+
 .pl-4{
   padding-left: 1rem;
 }
@@ -943,21 +972,13 @@ video {
   color: rgb(255 209 91 / var(--tw-text-opacity));
 }
 
-/* .dropdownBtn {
-    @apply bg-white font-medium w-48 h-14 flex justify-between items-center px-4 rounded-lg;
-} */
+.\*\:w-4 > *{
+  width: 1rem;
+}
 
-/* .dropdownMenu {
-    @apply w-48 max-h-80 px-4 bg-white rounded-lg absolute top-0 overflow-hidden;
-} */
-
-/* .dropdownMenu-btn {
-    @apply mt-4 font-medium w-40 flex justify-between items-center;
-} */
-
-/* .dropdownMenu-input {
-    @apply mt-3.5 w-full h-9 border-light_grey border-solid border rounded-sm;
-} */
+.\*\:stroke-grey > *{
+  stroke: #7A7A7A;
+}
 
 .\*\:p-2 > *{
   padding: 0.5rem;
