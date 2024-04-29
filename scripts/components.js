@@ -44,11 +44,12 @@ class RecipeCard {
 }
 
 class Dropdown {
-    constructor (title, idName, dataList){
+    constructor (title, idName, dataList, callBackFunction){
         this._title = title
         this._list = dataList
-        this._selectedItemsList = []
-        this._id = idName 
+        this._id = idName
+        this._div = document.createElement('div')
+        this._callback = callBackFunction
 
         //Tailwind CSS
         this._btnClass = 'bg-white font-medium w-48 h-14 flex justify-between items-center px-4 rounded-lg'
@@ -69,90 +70,72 @@ class Dropdown {
         return btn
     }
 
-    #formatItemsKeywordsDiv (itemName){
-        const item = document.createElement("div")
-        const removeItemCross = document.createElement('span')
-        item.className ='bg-yellow w-48 h-14 flex justify-between items-center px-4 rounded-lg mb-5'
-        item.innerText = itemName
-        item.id = itemName
-        removeItemCross.innerText='X'
-        removeItemCross.className ='cursor-pointer'
-        removeItemCross.addEventListener("click",(event)=>{
-            this.#addItem(event.target.parentElement.innerText.slice(0,-2)) //slice to remove cross
-            document.getElementById(event.target.parentElement.id).remove()
-        })
-        item.appendChild(removeItemCross)
-        return item
-    }
-
-    #addItem(item){
-        const div = document.getElementById(this._id)
-        const ul = div.children[4]
-        this._list.push(item)
-        ul.remove()
-        div.appendChild(this.#dropdownMenuList())
-    }
-
-    #onItemClick(item){
-        const div = document.getElementById(this._id)
-        const ul = div.children[4]
-        const divKeywords = document.getElementById("keywords")
-        divKeywords.appendChild(this.#formatItemsKeywordsDiv(item))
-        const arrayPosition = this._list.indexOf(item)
-        this._list.splice(arrayPosition,1)
-        ul.remove()
-        div.appendChild(this.#dropdownMenuList())
-        div.classList.add("invisible")
-    }
-
-    #dropdownMenuList(){
+    #dropdownMenuList(listOfItems){
         const list = document.createElement('ul')
         list.className = this._menuListClass
-        this._list.sort()
-        this._list.forEach(elt=>{
+        listOfItems.sort()
+        listOfItems.forEach(elt=>{
             const item = document.createElement('li')
             item.className = this._itemListClass
             item.innerText=elt
-            item.addEventListener("click",(event)=>{this.#onItemClick(event.target.innerText)})
+            item.addEventListener("click",(event)=>{
+                this._callback(event.target.innerText)
+                this._div.classList.add("invisible")
+            })
             list.appendChild(item)
         })
         return list
     }
 
     #dropdownMenu(){
-        const div = document.createElement('div')
-        div.className = this._menuClass
-        div.id = this._id
-        div.setAttribute('data-selectedItemsList',this._selectedItemsList)
+        this._div.className = this._menuClass
+        this._div.id = this._id
+
         const btn = document.createElement('button')
         btn.className = this._menuBtnClass
         btn.innerHTML=`${this._title} <span class="fa-solid fa-angle-up"></span>`
         btn.addEventListener("click",()=>{
-            div.classList.add('invisible')
+            this.#resetInputValue()
+            resetCrossBtn.classList.add("invisible")
+            this._div.classList.add('invisible')
         })
 
         const input = document.createElement('input')
         input.className = this._menuInputClass
-        input.addEventListener("input",(event)=>{
-            const searchValue = event.target.value
-            const ul = div.children[4]
+        const inputListener = (event)=>{
+            //input filter
+            const searchValue = (event.target.value).toLowerCase()
+            const ul = this._div.children[4]
             ul.remove()
             const list = document.createElement('ul')
             list.className = this._menuListClass
             this._list.forEach(elt=>{
-                const eltSplit = elt.split(" ")
-                eltSplit.forEach(word=>{
-                    if(searchValue === word.slice(0,searchValue.length).toLowerCase()){
-                        const item = document.createElement('li')
-                        item.className = this._itemListClass
-                        item.innerText=elt
-                        item.addEventListener("click",(event)=>{this.#onItemClick(event.target.innerText)})
-                        list.appendChild(item)
-                    }
-                })
+                if( (elt.toLowerCase()).indexOf(searchValue)!== -1){
+                    const item = document.createElement('li')
+                    item.className = this._itemListClass
+                    item.innerText=elt
+                    item.addEventListener("click",(event)=>{
+                        this._callback(event.target.innerText)
+                        this.#resetInputValue()
+                        resetCrossBtn.classList.add("invisible")
+                        this._div.classList.add("invisible")
+                    })
+                    list.appendChild(item)
+                }
             })
-            div.appendChild(list)
-        })
+            this._div.appendChild(list)
+
+            //visibilty reset cross
+            if(event.target.value){
+                resetCrossBtn.classList.remove("invisible")
+                return
+            }
+            if(!resetCrossBtn.classList.contains("invisible")){
+                resetCrossBtn.classList.add("invisible")
+                return
+            }
+        }
+        input.addEventListener("input",inputListener)
         const magnifyingGlass = document.createElement('div')
         magnifyingGlass.className = this._magnifyingGlassInputClass
         magnifyingGlass.innerHTML = `
@@ -165,27 +148,24 @@ class Dropdown {
         resetCrossBtn.className=this._resetCrossBtnInputClass
         resetCrossBtn.innerHTML=`<span class="fa-solid fa-xmark"></span>`
         resetCrossBtn.addEventListener('click',()=>{
-            const ul=div.children[4]
-            ul.remove()
-            div.appendChild(this.#dropdownMenuList())
-            input.value=""
+            this.#resetInputValue()
             resetCrossBtn.classList.add("invisible")
         })
-        input.addEventListener("input",(event)=>{
-            if(event.target.value){
-                resetCrossBtn.classList.remove("invisible")
-                return
-            }
-            if(!resetCrossBtn.classList.contains("invisible")){
-                resetCrossBtn.classList.add("invisible")
-            }
-        })
-        div.appendChild(btn)
-        div.appendChild(input)
-        div.appendChild(magnifyingGlass)
-        div.appendChild(resetCrossBtn)
-        div.appendChild(this.#dropdownMenuList())
-        return div
+
+        this._div.appendChild(btn)
+        this._div.appendChild(input)
+        this._div.appendChild(magnifyingGlass)
+        this._div.appendChild(resetCrossBtn)
+        this._div.appendChild(this.#dropdownMenuList(this._list))
+        return this._div
+    }
+
+    #resetInputValue(){
+        const ul = this._div.children[4]
+        const input = this._div.children[1]
+        ul.remove()
+        this._div.appendChild(this.#dropdownMenuList(this._list))
+        input.value=""
     }
 
     get render(){
@@ -199,6 +179,21 @@ class Dropdown {
         li.appendChild(btn)
         li.appendChild(menu)
         return li
+    }
+
+    set addItem(item){
+        const ul = this._div.children[4]
+        this._list.push(item)
+        ul.remove()
+        this._div.appendChild(this.#dropdownMenuList(this._list))
+    }
+
+    set deleteItem(item){
+        const ul = this._div.children[4]
+        const arrayPosition = this._list.indexOf(item)
+        this._list.splice(arrayPosition,1)
+        ul.remove()
+        this._div.appendChild(this.#dropdownMenuList(this._list))
     }
 }
 
