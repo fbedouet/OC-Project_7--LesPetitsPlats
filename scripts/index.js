@@ -44,14 +44,75 @@ const getApplianceOfRecipes = (recipesData)=>{
     return appliancesAllRecipes
 }
 
+const sortRecipesByIngredients = (ingredients,recipesData)=>{
+    const callbackObject={}
+    ingredients.forEach(ingredient=>{
+        Object.entries(recipesData).forEach(recipe=>{
+            recipe[1].ingredients.forEach(ing=>{
+                if(firstLetterToUpperCase(ing.ingredient)===ingredient){
+                    try{
+                        callbackObject[ingredient].push(recipe[0])
+                    }catch{
+                       callbackObject[ingredient]=[recipe[0]] 
+                    }
+                }
+            })
+        })
+    })
+    return callbackObject
+}
+
+const sortRecipesByAppliances = (appliances, recipesData)=>{
+    const callbackObject={}
+    appliances.forEach(appliance=>{
+        Object.entries(recipesData).forEach(recipe=>{
+            if(firstLetterToUpperCase(recipe[1].appliance)===appliance){
+                try{
+                    callbackObject[appliance].push(recipe[0])
+                }catch{
+                   callbackObject[appliance]=[recipe[0]] 
+                }
+            }
+        })
+    })
+    return callbackObject
+}
+
+const sortRecipesByUstensils = (ustensils, recipesData)=>{
+    const callbackObject={}
+    ustensils.forEach(ustensils=>{
+        Object.entries(recipesData).forEach(recipe=>{
+            recipe[1].ustensils.forEach(ust=>{
+                if(firstLetterToUpperCase(ust)===ustensils){
+                    try{
+                        callbackObject[ustensils].push(recipe[0])
+                    }catch{
+                       callbackObject[ustensils]=[recipe[0]] 
+                    }
+                }
+            })
+        })
+    })
+    return callbackObject
+}
+
 const displayRecipes = (allRecipesArray, displayRecipesArray)=>{
-    const searchResult = document.querySelector(".searchResult")
+    const numberRecipesFound = document.querySelector("nav p")
+    if (document.querySelector(".searchResult")){
+        document.querySelector(".searchResult").remove()
+    }
+    
+    const searchResult = document.createElement("div")
+    searchResult.className = "searchResult flex flex-wrap justify-between gap-y-16"
+
     Object.keys(allRecipesArray).forEach(id=>{
-        if(displayRecipesArray.indexOf(Number(id)) !== -1){
+        if(displayRecipesArray.indexOf(id) !== -1){
             const cardContent = new RecipeCard(allRecipesArray[id])
             searchResult.appendChild(cardContent.component)
         }
     })
+    document.querySelector("main").appendChild(searchResult)
+    numberRecipesFound.innerHTML = `${displayRecipesArray.length} recettes`
 }
 
 const formatItemsKeywordsDiv = (itemName, removeItemsFunction)=>{
@@ -74,9 +135,15 @@ function init (){
         acc[recipe.id] = recipe
         return acc
     },{})
+
     const allIngredients = getIngredientsOfRecipes(recipesById)
     const allUstensiles = getUstensilsOfRecipes(recipesById)
     const allAppliances = getApplianceOfRecipes(recipesById)
+
+    const recipesByIngredients = sortRecipesByIngredients (allIngredients, recipesById)
+    const recipesByAppliances = sortRecipesByAppliances (allAppliances, recipesById)
+    const recipesByUstensils = sortRecipesByUstensils (allUstensiles, recipesById)
+
     const searchParams = {
         ingredients:[],
         appliances:[],
@@ -88,8 +155,36 @@ function init (){
     divSearchInput.appendChild(searchInput.component)
 
     const navBar = document.querySelector("nav ul")
-    const onSelectDropdownItems = (elt1) =>(callback)=>{
-        searchParams[elt1].push(callback)
+    const onSelectDropdownItems = (category) =>(item)=>{
+        searchParams[category].push(item)
+        renderRecipes()
+        switch(category){
+            case 'ingredients':
+                ingredientsDropdown.deleteItem = item
+                break
+            case 'ustensiles':
+                ustensilesDropdown.deleteItem = item
+                break
+            case 'appliances':
+                appliencesDropdown.deleteItem = item
+                break
+        }
+    }
+    const onRemoveItemsFunction = (category) =>(item)=>{
+        const arrayPosition = searchParams[category].indexOf(item)
+        searchParams[category].splice(arrayPosition,1)
+        
+        switch(category){
+            case 'ingredients':
+                ingredientsDropdown.addItem = item
+                break
+            case 'ustensiles':
+                ustensilesDropdown.addItem = item
+                break
+            case 'appliances':
+                appliencesDropdown.addItem = item
+                break
+        }
         renderRecipes()
     }
     const ingredientsDropdown = new Dropdown('Ingrédients','ingredientsDropdown',allIngredients, onSelectDropdownItems("ingredients"))
@@ -99,19 +194,63 @@ function init (){
     navBar.appendChild(ingredientsDropdown.render)
     navBar.appendChild(appliencesDropdown.render)
     navBar.appendChild(ustensilesDropdown.render)
-
     
-
     const renderRecipes = () =>{
-        const divKeywords = document.getElementById("keywords")
-        Object.values(searchParams).forEach(elt=>elt.forEach(item=>{
-            divKeywords.appendChild(formatItemsKeywordsDiv(firstLetterToUpperCase(item)))
-        }))
-        displayRecipes(recipesById,[50,2,20,25,30])
+        //initialize selected tag div
+        if (document.querySelector(".keyword")){
+            document.querySelector(".keyword").remove()
+        }
+        const keywordItems = document.createElement('div')
+        keywordItems.className = "keyword flex flex-wrap gap-x-5"
+        
+        //updating selected tag div
+        Object.keys(searchParams).forEach(category=>{
+            searchParams[category].forEach(item=>{
+                keywordItems.appendChild(formatItemsKeywordsDiv(item,onRemoveItemsFunction(category)))
+            })
+        })
+        document.querySelector('main').appendChild(keywordItems)
+
+        //render recipes with empty list in searchParams
+        const listOfSelectedItems = Object.values(searchParams).reduce((acc,elt)=>{
+            acc = acc.concat(elt)
+            return acc
+        },[])
+        if (listOfSelectedItems.length === 0){
+            if (document.querySelector(".keyword")){
+                document.querySelector(".keyword").remove()
+            }
+            displayRecipes(recipesById, Object.keys(recipesById))
+            return
+        }
+        //render recipes with selected items in search
+        const getRecipesOfItem = (category,item)=>{
+            if(category ==="ingredients"){
+                return recipesByIngredients[item]
+            }
+            if(category ==="appliances"){
+                return recipesByAppliances[item]
+            }
+            if(category ==="ustensiles"){
+                return recipesByUstensils[item]
+            }
+        }
+        
+        let isFirst = true
+        let searchResult = []
+        Object.keys(searchParams).forEach(category=>{
+            searchParams[category].forEach(item=>{
+                if(isFirst){
+                   searchResult = getRecipesOfItem(category,item)
+                    isFirst = false
+                   return
+                }
+                searchResult = getRecipesOfItem(category,item).filter(recipeId=>searchResult.includes(recipeId))
+            })
+        })
+        displayRecipes(recipesById,searchResult)
     }
-
     renderRecipes()
-
 }
 
 init()
