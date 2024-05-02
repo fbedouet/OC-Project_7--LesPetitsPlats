@@ -168,7 +168,7 @@ class Dropdown {
         input.value=""
     }
 
-    get render(){
+    render(){
         const li = document.createElement('li')
         const btn = this.#dropdownButton()
         const menu = this.#dropdownMenu()
@@ -181,17 +181,9 @@ class Dropdown {
         return li
     }
 
-    set addItem(item){
+    update(data){
         const ul = this._div.children[4]
-        this._list.push(item)
-        ul.remove()
-        this._div.appendChild(this.#dropdownMenuList(this._list))
-    }
-
-    set deleteItem(item){
-        const ul = this._div.children[4]
-        const arrayPosition = this._list.indexOf(item)
-        this._list.splice(arrayPosition,1)
+        this._list = data
         ul.remove()
         this._div.appendChild(this.#dropdownMenuList(this._list))
     }

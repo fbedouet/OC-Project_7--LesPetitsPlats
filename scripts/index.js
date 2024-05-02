@@ -131,11 +131,11 @@ const formatItemsKeywordsDiv = (itemName, removeItemsFunction)=>{
 }
 
 function init (){
+    //data indexing
     const recipesById = dataJson.reduce((acc,recipe)=>{
         acc[recipe.id] = recipe
         return acc
     },{})
-
     const allIngredients = getIngredientsOfRecipes(recipesById)
     const allUstensiles = getUstensilsOfRecipes(recipesById)
     const allAppliances = getApplianceOfRecipes(recipesById)
@@ -144,56 +144,55 @@ function init (){
     const recipesByAppliances = sortRecipesByAppliances (allAppliances, recipesById)
     const recipesByUstensils = sortRecipesByUstensils (allUstensiles, recipesById)
 
+    //state manager
     const searchParams = {
         ingredients:[],
         appliances:[],
         ustensiles:[]
     }
+
+    const dropdownsContent = {
+        ingredients: allIngredients,
+        appliances: allAppliances,
+        ustensiles: allUstensiles
+    }
+
+    const updateDropdownList = () => {
+        ingredientsDropdown.update (dropdownsContent.ingredients)
+        appliencesDropdown.update (dropdownsContent.appliances)
+        ustensilesDropdown.update (dropdownsContent.ustensiles)
+    }
     
+    const onSelectDropdownItems = (category) =>(item)=>{
+        searchParams[category].push(item)
+        dropdownsContent[category] = dropdownsContent[category].filter(elt => elt!=item)
+        updateDropdownList()
+        renderRecipes()
+    }
+    const onRemoveItemsFunction = (category) =>(item)=>{
+        const arrayPosition = searchParams[category].indexOf(item)
+        searchParams[category].splice(arrayPosition,1)
+        dropdownsContent[category].push(item)
+        updateDropdownList()
+        renderRecipes()
+    }
+
+    //build and display html page
     const divSearchInput = document.getElementById('inputSearch')
     const searchInput = new SearchInput('Rechercher une recette, un ingrédient, ...','/assets/svg/magnifyingGlass.svg')
     divSearchInput.appendChild(searchInput.component)
 
     const navBar = document.querySelector("nav ul")
-    const onSelectDropdownItems = (category) =>(item)=>{
-        searchParams[category].push(item)
-        renderRecipes()
-        switch(category){
-            case 'ingredients':
-                ingredientsDropdown.deleteItem = item
-                break
-            case 'ustensiles':
-                ustensilesDropdown.deleteItem = item
-                break
-            case 'appliances':
-                appliencesDropdown.deleteItem = item
-                break
-        }
-    }
-    const onRemoveItemsFunction = (category) =>(item)=>{
-        const arrayPosition = searchParams[category].indexOf(item)
-        searchParams[category].splice(arrayPosition,1)
-        
-        switch(category){
-            case 'ingredients':
-                ingredientsDropdown.addItem = item
-                break
-            case 'ustensiles':
-                ustensilesDropdown.addItem = item
-                break
-            case 'appliances':
-                appliencesDropdown.addItem = item
-                break
-        }
-        renderRecipes()
-    }
+
     const ingredientsDropdown = new Dropdown('Ingrédients','ingredientsDropdown',allIngredients, onSelectDropdownItems("ingredients"))
     const ustensilesDropdown = new Dropdown('Ustensiles','ustensilesDropdown',allUstensiles, onSelectDropdownItems("ustensiles"))
     const appliencesDropdown = new Dropdown('Appareils','appliencesDropdown',allAppliances, onSelectDropdownItems("appliances"))
 
-    navBar.appendChild(ingredientsDropdown.render)
-    navBar.appendChild(appliencesDropdown.render)
-    navBar.appendChild(ustensilesDropdown.render)
+    navBar.appendChild(ingredientsDropdown.render())
+    navBar.appendChild(appliencesDropdown.render())
+    navBar.appendChild(ustensilesDropdown.render())
+
+
     
     const renderRecipes = () =>{
         //initialize selected tag div
