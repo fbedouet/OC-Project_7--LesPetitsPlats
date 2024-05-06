@@ -62,6 +62,11 @@ class Dropdown {
         this._menuListClass = 'mt-6 text-sm overflow-y-scroll h-52 '
         this._itemListClass ='ml-4 mb-3 cursor-pointer'
     }
+    #removeAccent = strWithAccent => strWithAccent.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    #firstLetterToUpperCase = (name)=>{
+        const smallLetter =  name.toLowerCase()
+        return smallLetter[0].toUpperCase()+smallLetter.slice(1)
+    }
 
     #dropdownButton(){
         const btn = document.createElement('button')
@@ -73,13 +78,18 @@ class Dropdown {
     #dropdownMenuList(listOfItems){
         const list = document.createElement('ul')
         list.className = this._menuListClass
-        listOfItems.sort()
-        listOfItems.forEach(elt=>{
+
+        let searchResult = []
+        this._list.forEach(item=>{
+            searchResult.push([this.#firstLetterToUpperCase(this.#removeAccent(item)),item])
+        })
+        searchResult.sort()
+        searchResult.forEach(elt=>{
             const item = document.createElement('li')
             item.className = this._itemListClass
-            item.innerText=elt
+            item.innerText= this.#firstLetterToUpperCase(elt[1])
             item.addEventListener("click",(event)=>{
-                this._callback(event.target.innerText)
+                this._callback((event.target.innerText).toLowerCase())
                 this._div.classList.add("invisible")
             })
             list.appendChild(item)
@@ -109,19 +119,25 @@ class Dropdown {
             ul.remove()
             const list = document.createElement('ul')
             list.className = this._menuListClass
-            this._list.forEach(elt=>{
-                if( (elt.toLowerCase()).indexOf(searchValue)!== -1){
-                    const item = document.createElement('li')
-                    item.className = this._itemListClass
-                    item.innerText=elt
-                    item.addEventListener("click",(event)=>{
-                        this._callback(event.target.innerText)
-                        this.#resetInputValue()
-                        resetCrossBtn.classList.add("invisible")
-                        this._div.classList.add("invisible")
-                    })
-                    list.appendChild(item)
+
+            let searchResult = []
+            this._list.forEach(item=>{
+                if( item.indexOf(searchValue)!== -1){
+                    searchResult.push([this.#firstLetterToUpperCase(this.#removeAccent(item)),item])
                 }
+            })
+            searchResult.sort()
+            searchResult.forEach(elt=>{
+                const item = document.createElement('li')
+                item.className = this._itemListClass
+                item.innerText=this.#firstLetterToUpperCase(elt[1])
+                item.addEventListener("click",(event)=>{
+                    this._callback((event.target.innerText).toLowerCase())
+                    this.#resetInputValue()
+                    resetCrossBtn.classList.add("invisible")
+                    this._div.classList.add("invisible")
+                })
+                list.appendChild(item)
             })
             this._div.appendChild(list)
 
