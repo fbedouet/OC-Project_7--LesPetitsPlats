@@ -4,7 +4,18 @@ import {getData} from '../data/api.js'
 const searchParams = {
     ingredients:[],
     appliances:[],
-    ustensiles:[]
+    ustensiles:[],
+    recipes:[]
+}
+
+const withoutDuplicates = (array) =>{
+    const callbackArray = array.reduce((acc,ing)=>{
+        if(acc.indexOf(ing)===-1){
+            acc.push(ing)
+        }
+        return acc
+    },[])
+    return callbackArray
 }
 
 const dropdownsContent = {
@@ -15,9 +26,35 @@ const dropdownsContent = {
 
 const sortedData = {
     recipesById : getData().recipesById(),
+    ingredientsById : getData().ingredientsById(),
     recipesByIngredients : getData().sortRecipesByIngredients(),
     recipesByAppliances : getData().sortRecipesByAppliances(),
     recipesByUstensils :getData().sortRecipesByUstensils()
+}
+
+const onSearchMainInput = (searchRequest) => {
+    if(!searchRequest){
+        searchParams.recipes=[]
+        renderRecipes()
+        return
+    }
+
+    let searchInput = []
+    Object.keys(sortedData.recipesByIngredients).forEach(ingredient=>{
+        if(ingredient.indexOf(searchRequest)!==-1){
+            searchInput = searchInput.concat(sortedData.recipesByIngredients[ingredient])
+        }
+    })
+    Object.entries(sortedData.recipesById).forEach(recipe=>{
+        if( (recipe[1].name).toLowerCase().indexOf(searchRequest) !==-1 ){
+            searchInput = searchInput.concat(recipe[0])
+        }
+        if( (recipe[1].description).toLowerCase().indexOf(searchRequest) !==-1 ){
+            searchInput = searchInput.concat(recipe[0])
+        }
+    })
+    searchParams.recipes = withoutDuplicates(searchInput)
+    renderRecipes()
 }
 
 const onSelectDropdownItem = (category) =>(item)=>{
@@ -106,10 +143,12 @@ const updateDropdownsContent = (searchResult) =>{
     dropdownsContent.ustensiles = withoutDuplicates(leftoverUstensils)
 
     Object.keys(searchParams).forEach(category=>{
-        searchParams[category].forEach(elt=>{
-            const index = dropdownsContent[category].indexOf(elt)
-            dropdownsContent[category].splice(index,1)
-        })
+        if(category!=="recipes"){
+            searchParams[category].forEach(elt=>{
+                const index = dropdownsContent[category].indexOf(elt)
+                dropdownsContent[category].splice(index,1)
+            })
+        }
     })
     displayNavBar()
 }
@@ -143,9 +182,11 @@ const renderRecipes = () =>{
     
     //updating selected tag div
     Object.keys(searchParams).forEach(category=>{
-        searchParams[category].forEach(item=>{
-            keywordItems.appendChild(formatItemsKeywordsDiv(item,onRemoveSearchItem(category)))
-        })
+        if(category!=="recipes"){
+            searchParams[category].forEach(item=>{
+                keywordItems.appendChild(formatItemsKeywordsDiv(item,onRemoveSearchItem(category)))
+            })
+        }
     })
     document.querySelector('main').appendChild(keywordItems)
 
@@ -178,23 +219,31 @@ const renderRecipes = () =>{
     let isFirst = true
     let searchResult = []
     Object.keys(searchParams).forEach(category=>{
-        searchParams[category].forEach(item=>{
-            if(isFirst){
-               searchResult = getRecipesOfItem(category,item)
-                isFirst = false
-               return
-            }
-            searchResult = getRecipesOfItem(category,item).filter(recipeId=>searchResult.includes(recipeId))
-        })
+        if(category!=="recipes"){
+            searchParams[category].forEach(item=>{
+                if(isFirst){
+                searchResult = getRecipesOfItem(category,item)
+                    isFirst = false
+                return
+                }
+                searchResult = getRecipesOfItem(category,item).filter(recipeId=>searchResult.includes(recipeId))
+            })
+        }
     })
+    if(searchResult.length!==0 && searchParams.recipes.length!==0){
+        searchResult = searchResult.filter(recipeId=>searchParams.recipes.includes(recipeId))
+    }
+    if (searchResult.length===0){
+        searchResult = searchParams.recipes
+    }
     updateDropdownsContent(searchResult)
     displayRecipes(searchResult)
 }
 
 function init (){
     const divSearchInput = document.getElementById('inputSearch')
-    const searchInput = new SearchInput('Rechercher une recette, un ingrédient, ...','/assets/svg/magnifyingGlass.svg')
-    divSearchInput.appendChild(searchInput.component)
+    const searchInput = new SearchInput('Rechercher une recette, un ingrédient, ...', '/assets/svg/magnifyingGlass.svg', onSearchMainInput)
+    divSearchInput.appendChild(searchInput.render())
     displayNavBar()
     renderRecipes()
 }

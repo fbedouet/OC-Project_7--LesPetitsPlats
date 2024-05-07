@@ -206,9 +206,10 @@ class Dropdown {
 }
 
 class SearchInput {
-    constructor(placeholder,srcImg){
+    constructor(placeholder, srcImg, callBackFunction){
         this._placeholder = placeholder
         this._srcImg = srcImg
+        this._callback = callBackFunction
 
         //Tailwind CSS
         this._sizeClass = 'relative h-16 w-2/3'
@@ -218,7 +219,7 @@ class SearchInput {
         this._resetCrossBtnClass = 'absolute right-20 top-5 font-manrope font-bold text-light_grey invisible'
     }
 
-    get component(){
+    render(){
         const div = document.createElement('div')
         div.className = this._sizeClass
 
@@ -227,8 +228,14 @@ class SearchInput {
         input.placeholder = this._placeholder
         input.type = "text"
         input.addEventListener("input",(event)=>{
-            if(event.target.value){
+            if(event.target.value.length<3){
+                this._callback("")
+            }
+            if(event.target.value.length>2){
                 resetCrossBtn.classList.remove("invisible")
+                if (event.target.value)
+                    this._callback((event.target.value.toLowerCase()))
+
                 return
             }
             if(!resetCrossBtn.classList.contains("invisible")){

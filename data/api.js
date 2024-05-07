@@ -109,7 +109,15 @@ function getData () {
         return callbackObject
     }
 
-    return {recipesById,
+    const ingredientsById = () => {
+        let ingredientsByRecipes = {}
+        Object.keys(recipesData).forEach(id=>{
+            ingredientsByRecipes[id] = recipesData[id].ingredients.map(elt=>(elt.ingredient).toLowerCase())
+        })
+        return ingredientsByRecipes
+    }
+
+    return {recipesById, ingredientsById,
             ingredientsOfRecipes, ustensilsOfRecipes, applianceOfRecipes,
             sortRecipesByIngredients, sortRecipesByAppliances, sortRecipesByUstensils
         }
