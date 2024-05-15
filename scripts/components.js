@@ -63,6 +63,7 @@ class Dropdown {
         this._itemListClass ='ml-4 mb-3 cursor-pointer'
     }
     #removeAccent = strWithAccent => strWithAccent.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+
     #firstLetterToUpperCase = (name)=>{
         const smallLetter =  name.toLowerCase()
         return smallLetter[0].toUpperCase()+smallLetter.slice(1)
@@ -70,6 +71,7 @@ class Dropdown {
 
     #dropdownButton(){
         const btn = document.createElement('button')
+        btn.id = "btn_".concat(this._id)
         btn.className = this._btnClass
         btn.innerHTML=`${this._title} <span class="fa-solid fa-angle-down"></span>`
         return btn

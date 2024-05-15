@@ -94,7 +94,7 @@ const displayNavBar = () =>{
     ul.appendChild(ingredientsDropdown.render())
     ul.appendChild(appliencesDropdown.render())
     ul.appendChild(ustensilesDropdown.render())
-
+    
     navBar.appendChild(ul)
     navBar.appendChild(p)
 }
@@ -258,12 +258,40 @@ const renderRecipes = (searchResult, itemToRemoved) =>{
     displayRecipes(searchResult)
 }
 
+const closeDropdownWhenClickedOutside = (event) => {
+    if( event.target.id === "ingredientsDropdown"
+        || event.target.id === "btn_ingredientsDropdown"
+        || event.target.parentElement.id === "btn_ingredientsDropdown"
+        )
+        {}else{
+        document.getElementById("ingredientsDropdown").classList.add("invisible")
+    }
+
+    if( event.target.id === "appliencesDropdown"
+        || event.target.id === "btn_appliencesDropdown"
+        || event.target.parentElement.id === "btn_appliencesDropdown"
+        )
+        {}else{
+        document.getElementById("appliencesDropdown").classList.add("invisible")
+    }
+
+    if( event.target.id === "ustensilesDropdown"
+        || event.target.id === "btn_ustensilesDropdown"
+        || event.target.parentElement.id === "btn_ustensilesDropdown"
+        )
+        {}else{
+        document.getElementById("ustensilesDropdown").classList.add("invisible")
+    }
+
+}
+
 function init (){
     const divSearchInput = document.getElementById('inputSearch')
     const searchInput = new SearchInput('Rechercher une recette, un ingrédient, ...', '/assets/svg/magnifyingGlass.svg', onSearchMainInput)
     divSearchInput.appendChild(searchInput.render())
     displayNavBar()
     renderRecipes([])
+    document.addEventListener("click",closeDropdownWhenClickedOutside)
 }
 
 init()
