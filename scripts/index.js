@@ -80,6 +80,7 @@ const displayNavBar = () =>{
     const navBar = document.querySelector("nav")
     if (navBar.children.length !== 0){
         document.querySelector("nav ul").remove()
+        document.querySelector("nav p").remove()
     }
     const ul = document.createElement("ul")
     ul.className = "flex gap-16 font-manrope py-5"
@@ -87,11 +88,15 @@ const displayNavBar = () =>{
     const ingredientsDropdown = new Dropdown('Ingrédients','ingredientsDropdown',dropdownsContent.ingredients, onSelectDropdownItem("ingredients"))
     const ustensilesDropdown = new Dropdown('Ustensiles','ustensilesDropdown',dropdownsContent.ustensiles, onSelectDropdownItem("ustensiles"))
     const appliencesDropdown = new Dropdown('Appareils','appliencesDropdown',dropdownsContent.appliances, onSelectDropdownItem("appliances"))
+    const p = document.createElement("p")
+    p.className = "font-anton text-xl"
 
     ul.appendChild(ingredientsDropdown.render())
     ul.appendChild(appliencesDropdown.render())
     ul.appendChild(ustensilesDropdown.render())
+
     navBar.appendChild(ul)
+    navBar.appendChild(p)
 }
 
 const displayRecipes = (displayRecipesArray)=>{
@@ -99,7 +104,7 @@ const displayRecipes = (displayRecipesArray)=>{
     if (displayRecipesArray.length===0){
         displayRecipesArray = Object.keys(allRecipesArray)
     }
-    // const numberRecipesFound = document.querySelector("nav p")
+    const numberRecipesFound = document.querySelector("nav p")
     if (document.querySelector(".searchResult")){
         document.querySelector(".searchResult").remove()
     }
@@ -114,7 +119,7 @@ const displayRecipes = (displayRecipesArray)=>{
         }
     })
     document.querySelector("main").appendChild(searchResult)
-    // numberRecipesFound.innerHTML = `${displayRecipesArray.length} recettes`
+    numberRecipesFound.innerHTML = `${displayRecipesArray.length} recettes`
 }
 
 const updateDropdownsContent = (searchResult,itemToRemoved) =>{
@@ -249,7 +254,6 @@ const renderRecipes = (searchResult, itemToRemoved) =>{
         return
     }
 
-    console.log(dropdownsContent.ingredients.length)
     updateDropdownsContent(searchResult,itemToRemoved)
     displayRecipes(searchResult)
 }
