@@ -258,6 +258,7 @@ class SearchInput {
         resetCrossBtn.addEventListener("click",()=>{
             input.value=""
             resetCrossBtn.classList.add("invisible")
+            this._callback("")
         })
 
         div.appendChild(input)
