@@ -192,21 +192,18 @@ const resultOfDropdown = () =>{
         }
     }
     
-    let isFirst = true
     let searchResult = []
-
-    Object.keys(searchParams).forEach(category=>{
-        if(category!=="recipes"){
-            searchParams[category].forEach(item=>{
-                if(isFirst){
-                    searchResult = getRecipesOfItem(category,item)
-                    isFirst = false
-                    return
-                }
+ 
+    Object.keys(searchParams).filter(([category])=>category !== 'recipes').forEach(category=>{
+        searchParams[category].forEach(item=>{
+            if (searchResult.length!==0){
                 searchResult = getRecipesOfItem(category,item).filter(recipeId=>searchResult.includes(recipeId))
-            })
-        }
+                return
+            }   
+            searchResult = getRecipesOfItem(category,item)
+        })
     })
+
     if(searchParams.recipes.length!==0){
         searchResult = searchResult.filter(recipeId=>searchParams.recipes.includes(recipeId))
     }
@@ -259,30 +256,21 @@ const renderRecipes = (searchResult, itemToRemoved) =>{
 }
 
 const closeDropdownWhenClickedOutside = (event) => {
-    if( event.target.id === "ingredientsDropdown"
-        || event.target.id === "btn_ingredientsDropdown"
-        || event.target.parentElement.id === "btn_ingredientsDropdown"
-        )
+    console.log(event.target.id,event.target.parentElement.id)
+    if( event.target.classList[0] === "noclose" || event.target.id === "btn_ingredientsDropdown" || event.target.parentElement.id === "btn_ingredientsDropdown" )
         {}else{
-        document.getElementById("ingredientsDropdown").classList.add("invisible")
+            document.getElementById("ingredientsDropdown").classList.add("invisible")
     }
 
-    if( event.target.id === "appliencesDropdown"
-        || event.target.id === "btn_appliencesDropdown"
-        || event.target.parentElement.id === "btn_appliencesDropdown"
-        )
+    if( event.target.classList[0] === "noclose" || event.target.id === "btn_appliencesDropdown" || event.target.parentElement.id === "btn_appliencesDropdown" )
         {}else{
-        document.getElementById("appliencesDropdown").classList.add("invisible")
+            document.getElementById("appliencesDropdown").classList.add("invisible")
     }
 
-    if( event.target.id === "ustensilesDropdown"
-        || event.target.id === "btn_ustensilesDropdown"
-        || event.target.parentElement.id === "btn_ustensilesDropdown"
-        )
+    if( event.target.classList[0] === "noclose" || event.target.id === "btn_ustensilesDropdown" || event.target.parentElement.id === "btn_ustensilesDropdown" )
         {}else{
-        document.getElementById("ustensilesDropdown").classList.add("invisible")
+            document.getElementById("ustensilesDropdown").classList.add("invisible")
     }
-
 }
 
 function init (){
