@@ -54,6 +54,7 @@ const onSearchMainInput = (searchRequest) => {
     }
     searchParams.recipes = withoutDuplicates(searchInput)
 
+    //if a search request has already been made with dropdown menu
     const numberOfTag = searchParams.ingredients.length + searchParams.appliances.length + searchParams.ustensiles.length
     if(numberOfTag!==0){
         const searchResult = resultOfDropdown().filter(recipeId=>searchParams.recipes.includes(recipeId))
@@ -194,16 +195,19 @@ const resultOfDropdown = () =>{
     
     let searchResult = []
  
-    Object.keys(searchParams).filter(([category])=>category !== 'recipes').forEach(category=>{
-        searchParams[category].forEach(item=>{
-            if (searchResult.length!==0){
-                searchResult = getRecipesOfItem(category,item).filter(recipeId=>searchResult.includes(recipeId))
-                return
-            }   
-            searchResult = getRecipesOfItem(category,item)
-        })
+    Object.keys(searchParams).forEach(category=>{
+        if(category!=="recipes"){
+            searchParams[category].forEach(item=>{
+                if (searchResult.length!==0){
+                    searchResult = getRecipesOfItem(category,item).filter(recipeId=>searchResult.includes(recipeId))
+                    return
+                }   
+                searchResult = getRecipesOfItem(category,item)
+            })
+        }
     })
 
+    //if a search request has already been made with main search input
     if(searchParams.recipes.length!==0){
         searchResult = searchResult.filter(recipeId=>searchParams.recipes.includes(recipeId))
     }
@@ -256,7 +260,6 @@ const renderRecipes = (searchResult, itemToRemoved) =>{
 }
 
 const closeDropdownWhenClickedOutside = (event) => {
-    console.log(event.target.id,event.target.parentElement.id)
     if( event.target.classList[0] === "noclose" || event.target.id === "btn_ingredientsDropdown" || event.target.parentElement.id === "btn_ingredientsDropdown" )
         {}else{
             document.getElementById("ingredientsDropdown").classList.add("invisible")
