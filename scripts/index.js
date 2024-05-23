@@ -6,7 +6,7 @@ const searchParams = {
     ingredients:[],
     appliances:[],
     ustensiles:[],
-    recipes:[]
+    searchRequest:""
 }
 
 const dropdownsContent = {
@@ -24,21 +24,73 @@ const sortedData = {
 }
 
 const onSearchMainInput = (searchRequest) => {
-    let itemToRemoved
-    if(!searchRequest){
-        searchParams.recipes=[]
-        renderRecipes(resultOfDropdown())
-        return
+    searchParams.searchRequest = searchRequest
+    searchRecipes()
+}
+
+const onSelectDropdownItem = (category) =>(item)=>{
+    searchParams[category].push(item)
+    dropdownsContent[category] = dropdownsContent[category].filter(elt => elt!=item)
+    searchRecipes()
+}
+
+const onRemoveSearchItem = (category) =>(item)=>{
+    const arrayPosition = searchParams[category].indexOf(item)
+    searchParams[category].splice(arrayPosition,1)
+    dropdownsContent[category].push(item)
+    searchRecipes()
+}
+
+const searchRecipes =()=> {
+    const searchRequest = searchParams.searchRequest
+
+    let searchResult=[]
+    const addInSearchResult =(ids)=> {
+        if(searchResult.length===0){
+            searchResult=ids
+            return
+        }
+        searchResult=searchResult.filter(id=>ids.includes(id))
     }
-    let searchInput = []
-    Object.keys(sortedData.recipesByIngredients).forEach(ingredient=>{
-        if(ingredient.indexOf(searchRequest)!==-1){
-            searchInput = searchInput.concat(sortedData.recipesByIngredients[ingredient])
-            if(ingredient === searchRequest){
-                itemToRemoved = searchRequest
-            }
+
+    // Search ingredients, appliances, or utensils with dropdown
+    let dropdownResult=[]
+    const getRecipesOfItem = (category,item)=>{
+        if(category ==="ingredients"){
+            return sortedData.recipesByIngredients[item]
+        }
+        if(category ==="appliances"){
+            return sortedData.recipesByAppliances[item]
+        }
+        if(category ==="ustensiles"){
+            return sortedData.recipesByUstensils[item]
+        }
+    }
+    Object.keys(searchParams).forEach(category=>{
+        if(category!=="searchRequest"){
+            searchParams[category].forEach(item=>{
+                if (dropdownResult.length!==0){
+                    dropdownResult = getRecipesOfItem(category,item).filter(recipeId=>dropdownResult.includes(recipeId))
+                    return
+                }   
+                dropdownResult = getRecipesOfItem(category,item)
+            })
         }
     })
+    addInSearchResult(dropdownResult)
+
+    // Search ingredients with main input
+    let searchInput=[]
+    Object.keys(sortedData.recipesByIngredients).forEach(ingredient=>{
+    if(ingredient.indexOf(searchRequest)!==-1){
+        searchInput = searchInput.concat(sortedData.recipesByIngredients[ingredient])
+        // if(ingredient === searchRequest){
+        //     itemToRemoved = searchRequest
+        // }
+    }
+    })
+
+    // Search in description or in title with main input
     Object.entries(sortedData.recipesById).forEach(recipe=>{
         if( (recipe[1].name).toLowerCase().indexOf(searchRequest) !==-1 ){
             searchInput = searchInput.concat(recipe[0])
@@ -47,34 +99,9 @@ const onSearchMainInput = (searchRequest) => {
             searchInput = searchInput.concat(recipe[0])
         }
     })
+    addInSearchResult(withoutDuplicates(searchInput))
 
-    if (searchRequest && searchInput.length===0){
-        renderRecipes(["0",searchRequest])
-        return
-    }
-    searchParams.recipes = withoutDuplicates(searchInput)
-
-    //if a search request has already been made with dropdown menu
-    const numberOfTag = searchParams.ingredients.length + searchParams.appliances.length + searchParams.ustensiles.length
-    if(numberOfTag!==0){
-        const searchResult = resultOfDropdown().filter(recipeId=>searchParams.recipes.includes(recipeId))
-        renderRecipes(searchResult)
-        return
-    }
-    renderRecipes(searchParams.recipes,itemToRemoved)
-}
-
-const onSelectDropdownItem = (category) =>(item)=>{
-    searchParams[category].push(item)
-    dropdownsContent[category] = dropdownsContent[category].filter(elt => elt!=item)
-    renderRecipes(resultOfDropdown())
-}
-
-const onRemoveSearchItem = (category) =>(item)=>{
-    const arrayPosition = searchParams[category].indexOf(item)
-    searchParams[category].splice(arrayPosition,1)
-    dropdownsContent[category].push(item)
-    renderRecipes(resultOfDropdown())
+    renderRecipes(searchResult)
 }
 
 const displayNavBar = () =>{
@@ -123,7 +150,7 @@ const displayRecipes = (displayRecipesArray)=>{
     numberRecipesFound.innerHTML = `${displayRecipesArray.length} recettes`
 }
 
-const updateDropdownsContent = (searchResult,itemToRemoved) =>{
+const updateDropdownsContent = (searchResult) =>{
     if(searchResult.length===0){
         dropdownsContent.ingredients = getData().ingredientsOfRecipes()
         dropdownsContent.appliances = getData().applianceOfRecipes()
@@ -146,17 +173,17 @@ const updateDropdownsContent = (searchResult,itemToRemoved) =>{
     dropdownsContent.ustensiles = withoutDuplicates(leftoverUstensils)
 
     Object.keys(searchParams).forEach(category=>{
-        if(category!=="recipes"){
+        if(category!=="searchRequest"){
             searchParams[category].forEach(elt=>{
                 const index = dropdownsContent[category].indexOf(elt)
                 dropdownsContent[category].splice(index,1)
             })
         }
     })
-    if(itemToRemoved){
-        const index = dropdownsContent.ingredients.indexOf(itemToRemoved)
-        dropdownsContent.ingredients.splice(index,1)
-    }
+    // if(itemToRemoved){
+    //     const index = dropdownsContent.ingredients.indexOf(itemToRemoved)
+    //     dropdownsContent.ingredients.splice(index,1)
+    // }
     displayNavBar()
 }
 
@@ -179,43 +206,8 @@ const formatItemsKeywordsDiv = (itemName, removeItemFunction)=>{
     return item
 }
 
-const resultOfDropdown = () =>{
-    //render recipes with selected items in search
-    const getRecipesOfItem = (category,item)=>{
-        if(category ==="ingredients"){
-            return sortedData.recipesByIngredients[item]
-        }
-        if(category ==="appliances"){
-            return sortedData.recipesByAppliances[item]
-        }
-        if(category ==="ustensiles"){
-            return sortedData.recipesByUstensils[item]
-        }
-    }
-    
-    let searchResult = []
- 
-    Object.keys(searchParams).forEach(category=>{
-        if(category!=="recipes"){
-            searchParams[category].forEach(item=>{
-                if (searchResult.length!==0){
-                    searchResult = getRecipesOfItem(category,item).filter(recipeId=>searchResult.includes(recipeId))
-                    return
-                }   
-                searchResult = getRecipesOfItem(category,item)
-            })
-        }
-    })
-
-    //if a search request has already been made with main search input
-    if(searchParams.recipes.length!==0){
-        searchResult = searchResult.filter(recipeId=>searchParams.recipes.includes(recipeId))
-    }
-    return searchResult
-}
-
-const renderRecipes = (searchResult, itemToRemoved) =>{
-    if(searchResult[0]==="0"){
+const renderRecipes = (searchResult) =>{
+    if(searchResult.length===0 && searchParams.searchRequest!==""){
         document.querySelector(".searchResult").remove()
         const searchResultDiv = document.createElement("div")
         searchResultDiv.className = "searchResult"
@@ -224,6 +216,7 @@ const renderRecipes = (searchResult, itemToRemoved) =>{
         document.querySelector("main").appendChild(searchResultDiv)
         return
     }
+
     //initialize selected tag div
     if (document.querySelector(".keyword")){
         document.querySelector(".keyword").remove()
@@ -233,7 +226,7 @@ const renderRecipes = (searchResult, itemToRemoved) =>{
     
     //updating selected tag div
     Object.keys(searchParams).forEach(category=>{
-        if(category!=="recipes"){
+        if(category!=="searchRequest"){
             searchParams[category].forEach(item=>{
                 keywordItems.appendChild(formatItemsKeywordsDiv(item,onRemoveSearchItem(category)))
             })
@@ -255,7 +248,7 @@ const renderRecipes = (searchResult, itemToRemoved) =>{
         return
     }
 
-    updateDropdownsContent(searchResult,itemToRemoved)
+    updateDropdownsContent(searchResult)
     displayRecipes(searchResult)
 }
 
