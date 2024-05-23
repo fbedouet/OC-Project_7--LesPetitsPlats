@@ -1,3 +1,13 @@
+const withoutDuplicates = (array) =>{
+    const callbackArray = array.reduce((acc,ing)=>{
+        if(acc.indexOf(ing)===-1){
+            acc.push(ing)
+        }
+        return acc
+    },[])
+    return callbackArray
+}
+
 const firstLetterToUpperCase = (name)=>{
     const smallLetter =  name.toLowerCase()
     return smallLetter[0].toUpperCase()+smallLetter.slice(1)
@@ -11,4 +21,4 @@ const normalizeID = (keyword)=>{
     return removeAccent(idName.toLowerCase())
 }
 
-export{firstLetterToUpperCase, removeAccent, normalizeID}
+export{withoutDuplicates, firstLetterToUpperCase, removeAccent, normalizeID}
