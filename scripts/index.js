@@ -7,7 +7,7 @@ const searchParams = {
     ingredients:[],
     appliances:[],
     ustensiles:[],
-    searchRequest:""
+    searchRequest:[]
 }
 
 const dropdownsContent = {
@@ -26,81 +26,81 @@ const sortedData = {
 }
 
 const onSearchMainInput = (searchRequest) => {
-    searchParams.searchRequest = searchRequest
+    searchParams.searchRequest = [searchRequest]
     searchRecipes()
 }
 
 const searchRecipes = () => {
     const searchRequest = searchParams.searchRequest
-    let searchResult=[]
+    // let searchResult=[]
 
-    const addInSearchResult =(ids)=> {
-        if(searchResult.length===0){
-            searchResult=ids
-        }else{
-            searchResult=searchResult.filter(id=>ids.includes(id))
+    const filteredRecipes = sortedData.allRecipes.filter((recipe) => {
+        let isMatchingTagIngredient = false
+        let isMatchingTagUstensil = false
+        let isMatchingTagAppliance = false
+        let isMatchingSearchInput = false
+
+        const numberOfCategorySelected = [
+                    searchParams.ingredients.length!==0, 
+                    searchParams.ustensiles.length!==0,
+                    searchParams.appliances.length!==0,
+                    searchParams.searchRequest.length!==0].filter(elt=>elt===true).length
+
+        if(searchParams.ingredients.length!==0){
+            isMatchingTagIngredient = searchParams.ingredients.every((ingredient) => {
+                return recipe.ingredients.some((recipeIngredient) => recipeIngredient.ingredient.toLocaleLowerCase() === ingredient)
+            })
         }
-    }
+        if(searchParams.ustensiles.length!==0){
+            isMatchingTagUstensil = searchParams.ustensiles.every(tag=>{
+                return recipe.ustensils.some(ust=>ust.toLocaleLowerCase()===tag)
+            })
+        }
+        
+        if(searchParams.appliances.length!==0){
+            isMatchingTagAppliance = searchParams.appliances.every((tag) => {
+                return recipe.appliance.toLocaleLowerCase() === tag
+            })
+        }
+        if(searchParams.searchRequest.length!==0){
+            isMatchingSearchInput = 
+                recipe.name.toLocaleLowerCase().includes(searchParams.searchRequest) ||
+                recipe.description.toLocaleLowerCase().includes(searchParams.searchRequest) ||
+                searchParams.searchRequest.every((request=>{
+                    return recipe.ingredients.some(recipeIngredient => recipeIngredient.ingredient.toLocaleLowerCase().includes(request))
+                }))
+        }
 
-    // Search ingredients with dropdown
-    for(let tag=0 ; tag<searchParams.ingredients.length ; tag++){
-        let dropdownResult=[]
-        for(let cpt=0 ; cpt<dataJson.length ; cpt++){
-            const recipe = dataJson[cpt]
-            for(let ing=0 ; ing<recipe.ingredients.length ; ing++){
-                if(recipe.ingredients[ing].ingredient.toLocaleLowerCase()===searchParams.ingredients[tag]){
-                    dropdownResult=dropdownResult.concat(recipe.id.toString())
-                }
+        const isMatchingRequest =()=> {
+            if(numberOfCategorySelected===1){
+                return isMatchingTagIngredient || isMatchingTagUstensil || isMatchingTagAppliance || isMatchingSearchInput
+            }
+            if(numberOfCategorySelected===2){
+               return   (isMatchingTagIngredient && isMatchingTagUstensil && !isMatchingTagAppliance && !isMatchingSearchInput) || 
+                        (isMatchingTagIngredient && !isMatchingTagUstensil && isMatchingTagAppliance && !isMatchingSearchInput) || 
+                        (isMatchingTagIngredient && !isMatchingTagUstensil && !isMatchingTagAppliance && isMatchingSearchInput) || 
+                        (!isMatchingTagIngredient && isMatchingTagUstensil && isMatchingTagAppliance && !isMatchingSearchInput) ||    
+                        (!isMatchingTagIngredient && isMatchingTagUstensil && !isMatchingTagAppliance && isMatchingSearchInput) ||   
+                        (!isMatchingTagIngredient && !isMatchingTagUstensil && isMatchingTagAppliance && isMatchingSearchInput)     
+            }
+            if(numberOfCategorySelected===3){
+                return  (isMatchingTagIngredient && isMatchingTagUstensil && isMatchingTagAppliance && !isMatchingSearchInput) ||   
+                        (!isMatchingTagIngredient && isMatchingTagUstensil && isMatchingTagAppliance && isMatchingSearchInput) || 
+                        (isMatchingTagIngredient && !isMatchingTagUstensil && isMatchingTagAppliance && isMatchingSearchInput) ||  
+                        (isMatchingTagIngredient && isMatchingTagUstensil && !isMatchingTagAppliance && isMatchingSearchInput)   
+
+            }
+            if(numberOfCategorySelected===4){
+                return  (isMatchingTagIngredient && isMatchingTagUstensil && isMatchingTagAppliance && isMatchingSearchInput)
             }
         }
-        addInSearchResult(dropdownResult)
-    }
+        if(isMatchingRequest()){
+            console.log(recipe.id,isMatchingTagIngredient, isMatchingTagUstensil,isMatchingTagAppliance,isMatchingSearchInput,numberOfCategorySelected)
+        }
+        return isMatchingRequest()
 
-    // Search appliances with dropdown
-    for(let tag=0 ; tag<searchParams.appliances.length ; tag++){
-        let dropdownResult=[]
-        for(let cpt=0 ; cpt<sortedData.allRecipes.length ; cpt++){
-            const recipe = sortedData.allRecipes[cpt]
-            if(recipe.appliance.toLocaleLowerCase()===searchParams.appliances[tag]){
-                dropdownResult=dropdownResult=dropdownResult.concat(recipe.id.toString())
-            }
-        }
-        addInSearchResult(dropdownResult)
-    }
-
-    // Search utensils with dropdown
-    for(let tag=0 ; tag<searchParams.ustensiles.length ; tag++){
-        let dropdownResult=[]
-        for(let cpt=0 ; cpt<sortedData.allRecipes.length ; cpt++){
-            const recipe = sortedData.allRecipes[cpt]
-            for(let ust=0 ; ust<recipe.ustensils.length ; ust++){
-                if(recipe.ustensils[ust]===searchParams.ustensiles[tag]){
-                    dropdownResult=dropdownResult=dropdownResult.concat(recipe.id.toString())
-                }
-            }
-        }
-        addInSearchResult(dropdownResult)
-    }
-    
-    // Search with main input
-    let mainInputResult=[]
-    for( let id=0 ; id<sortedData.allRecipes.length ; id++ ){
-        const recipe = sortedData.allRecipes[id]
-        if(recipe.description.toLocaleLowerCase().indexOf(searchRequest)!==-1){
-            mainInputResult = mainInputResult.concat(recipe.id.toString())
-        }
-        if(recipe.name.toLocaleLowerCase().indexOf(searchRequest)!==-1){
-            mainInputResult = mainInputResult.concat(recipe.id.toString())
-        }
-        for( let ing=0 ; ing<recipe.ingredients.length ; ing++){
-            if(recipe.ingredients[ing].ingredient.toLocaleLowerCase()===searchParams.searchRequest){
-                mainInputResult = mainInputResult.concat(recipe.id.toString())
-            }
-        }
-    }
-    addInSearchResult( withoutDuplicates(mainInputResult) )
-
-    renderRecipes(searchResult)
+    })
+    renderRecipes(filteredRecipes.map(({id})=>id.toString()))
 }
 
 const onSelectDropdownItem = (category) =>(item)=>{
@@ -220,7 +220,7 @@ const formatItemsKeywordsDiv = (itemName, removeItemFunction)=>{
 }
 
 const renderRecipes = (searchResult, itemToRemoved) =>{
-    if(searchResult.length===0 && searchParams.searchRequest!==""){
+    if(searchResult.length===0 && searchParams.searchRequest.length!==0){
         document.querySelector(".searchResult").remove()
         const searchResultDiv = document.createElement("div")
         searchResultDiv.className = "searchResult"
