@@ -221,6 +221,20 @@ class SearchInput {
         this._resetCrossBtnClass = 'absolute right-20 top-5 font-manrope font-bold text-light_grey invisible'
     }
 
+    #normalizeInputText(text){
+        console.log("dh")
+        console.log("entrée:",text)
+        if(text.includes(">")){text=text.replaceAll(">","&gt;")}
+        if(text.includes("<")){text=text.replaceAll("<","&lt;")}
+        if(text.includes("\"")){text=text.replaceAll("\"","&quot;")}
+        if(text.includes("\'")){text=text.replaceAll("\'","&apos;")}
+        if(text.includes("\`")){text=text.replaceAll("\`","&grave;")}
+        if(text.includes("/")){text=text.replaceAll("/","&sol;")}
+        if(text.includes("=")){text=text.replaceAll("=","&equals;")}
+        console.log("sortie:",text)
+         return text.toLowerCase()
+     }
+
     render(){
         const div = document.createElement('div')
         div.className = this._sizeClass
@@ -236,7 +250,7 @@ class SearchInput {
             if(event.target.value.length>2){
                 resetCrossBtn.classList.remove("invisible")
                 if (event.target.value)
-                    this._callback((event.target.value.toLowerCase()))
+                    this._callback(this.#normalizeInputText(event.target.value))
 
                 return
             }
@@ -271,5 +285,71 @@ class SearchInput {
 
 
 }
+
+
+// class SearchInput {
+//     constructor(placeholder, srcImg, callBackFunction){
+//         this._placeholder = placeholder
+//         this._srcImg = srcImg
+//         this._callback = callBackFunction
+
+//         //Tailwind CSS
+//         this._sizeClass = 'relative h-16 w-2/3'
+//         this._inputClass = 'w-full h-full rounded-xl pl-9 font-manrope'
+//         this._searchBtnClass = 'absolute right-2 top-2 bg-black hover:bg-yellow w-12 h-12 flex justify-center items-center rounded-lg hover:*:stroke-black *:p-2'
+//         this._magnifyingGlassClass='stroke-white'
+//         this._resetCrossBtnClass = 'absolute right-20 top-5 font-manrope font-bold text-light_grey invisible'
+//     }
+
+//     render(){
+//         const div = document.createElement('div')
+//         div.className = this._sizeClass
+
+//         const input = document.createElement('input')
+//         input.className = this._inputClass
+//         input.placeholder = this._placeholder
+//         input.type = "text"
+//         input.addEventListener("input",(event)=>{
+//             if(event.target.value.length<3){
+//                 this._callback("")
+//             }
+//             if(event.target.value.length>2){
+//                 resetCrossBtn.classList.remove("invisible")
+//                 if (event.target.value)
+//                     this._callback((event.target.value.toLowerCase()))
+
+//                 return
+//             }
+//             if(!resetCrossBtn.classList.contains("invisible")){
+//                 resetCrossBtn.classList.add("invisible")
+//             }
+//         })
+
+//         const searchBtn = document.createElement('button')
+//         searchBtn.className = this._searchBtnClass
+//         searchBtn.innerHTML=`
+//             <svg class=${this._magnifyingGlassClass} viewBox="0 0 28 29" fill="none">
+//                 <circle cx="10" cy="10.4219" r="9.5"/>
+//                 <line x1="18.3536" y1="19.0683" x2="27.3536" y2="28.0683"/>
+//             </svg>
+//         `
+        
+//         const resetCrossBtn = document.createElement('button')
+//         resetCrossBtn.className = this._resetCrossBtnClass
+//         resetCrossBtn.innerHTML = `<span class="fa-solid fa-xmark"></span>`
+//         resetCrossBtn.addEventListener("click",()=>{
+//             input.value=""
+//             resetCrossBtn.classList.add("invisible")
+//             this._callback("")
+//         })
+
+//         div.appendChild(input)
+//         div.appendChild(searchBtn)
+//         div.appendChild(resetCrossBtn)
+//         return div
+//     }
+
+
+// }
 
 export{RecipeCard, Dropdown, SearchInput}
