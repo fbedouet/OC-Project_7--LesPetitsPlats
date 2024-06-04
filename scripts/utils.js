@@ -21,4 +21,10 @@ const normalizeID = (keyword)=>{
     return removeAccent(idName.toLowerCase())
 }
 
-export{withoutDuplicates, firstLetterToUpperCase, removeAccent, normalizeID}
+const normalizeInputText =(text)=> {
+   if(text.includes(">")){text=text.replace(">",`${"\u003e"}`)}
+   if(text.includes("<")){text=text.replace("<",`${"\u003c"}`)}
+    return text
+}
+
+export{withoutDuplicates, firstLetterToUpperCase, removeAccent, normalizeID, normalizeInputText}

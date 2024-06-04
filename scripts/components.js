@@ -221,6 +221,20 @@ class SearchInput {
         this._resetCrossBtnClass = 'absolute right-20 top-5 font-manrope font-bold text-light_grey invisible'
     }
 
+    #normalizeInputText(text){
+        console.log("dh")
+        console.log("entrée:",text)
+        if(text.includes(">")){text=text.replaceAll(">","&gt;")}
+        if(text.includes("<")){text=text.replaceAll("<","&lt;")}
+        if(text.includes("\"")){text=text.replaceAll("\"","&quot;")}
+        if(text.includes("\'")){text=text.replaceAll("\'","&apos;")}
+        if(text.includes("\`")){text=text.replaceAll("\`","&grave;")}
+        if(text.includes("/")){text=text.replaceAll("/","&sol;")}
+        if(text.includes("=")){text=text.replaceAll("=","&equals;")}
+        console.log("sortie:",text)
+         return text.toLowerCase()
+     }
+
     render(){
         const div = document.createElement('div')
         div.className = this._sizeClass
@@ -236,7 +250,7 @@ class SearchInput {
             if(event.target.value.length>2){
                 resetCrossBtn.classList.remove("invisible")
                 if (event.target.value)
-                    this._callback((event.target.value.toLowerCase()))
+                    this._callback(this.#normalizeInputText(event.target.value))
 
                 return
             }

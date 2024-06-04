@@ -1,6 +1,6 @@
 import {RecipeCard, Dropdown, SearchInput} from './components.js'
 import {getData} from '../data/api.js'
-import{withoutDuplicates} from './utils.js'
+import{withoutDuplicates, normalizeInputText} from './utils.js'
 import {dataJson} from '../data/recipes.js'
 
 const searchParams = {
@@ -145,6 +145,8 @@ const updateDropdownsContent = (searchResult,itemToRemoved) =>{
     }
     displayNavBar()
 }
+
+
 
 const formatItemsKeywordsDiv = (itemName, removeItemFunction)=>{
     const firstLetterToUpperCase = (name)=>{
