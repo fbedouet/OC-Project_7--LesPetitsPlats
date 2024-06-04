@@ -86,12 +86,17 @@ const displayNavBar = () =>{
     navBar.appendChild(p)
 }
 
+const displayNumberRecipes =(number)=> {
+    const numberRecipesFound = document.querySelector("nav p")
+    numberRecipesFound.innerHTML = `${number} recettes`
+}
+
 const displayRecipes = (displayRecipesArray)=>{
     const allRecipesArray = sortedData.recipesById
     if (displayRecipesArray.length===0){
         displayRecipesArray = Object.keys(allRecipesArray)
     }
-    const numberRecipesFound = document.querySelector("nav p")
+    // const numberRecipesFound = document.querySelector("nav p")
     if (document.querySelector(".searchResult")){
         document.querySelector(".searchResult").remove()
     }
@@ -106,7 +111,8 @@ const displayRecipes = (displayRecipesArray)=>{
         }
     })
     document.querySelector("main").appendChild(searchResult)
-    numberRecipesFound.innerHTML = `${displayRecipesArray.length} recettes`
+    // numberRecipesFound.innerHTML = `${displayRecipesArray.length} recettes`
+    displayNumberRecipes(displayRecipesArray.length)
 }
 
 const updateDropdownsContent = (searchResult,itemToRemoved) =>{
@@ -146,8 +152,6 @@ const updateDropdownsContent = (searchResult,itemToRemoved) =>{
     displayNavBar()
 }
 
-
-
 const formatItemsKeywordsDiv = (itemName, removeItemFunction)=>{
     const firstLetterToUpperCase = (name)=>{
         const smallLetter =  name.toLowerCase()
@@ -175,6 +179,7 @@ const renderRecipes = (searchResult, itemToRemoved) =>{
         searchResultDiv.innerHTML = `Aucune recette ne contient pas '${searchParams.searchRequest}' vous pouvez chercher «
         tarte aux pommes », « poisson », etc.`
         document.querySelector("main").appendChild(searchResultDiv)
+        displayNumberRecipes("0")
         return
     }
     //initialize selected tag div
