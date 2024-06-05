@@ -13,7 +13,7 @@ const firstLetterToUpperCase = (name)=>{
     return smallLetter[0].toUpperCase()+smallLetter.slice(1)
 }
 
-const removeAccent = strWithAccent => strWithAccent.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+const removeAccent = strWithAccent => strWithAccent.normalize("NFD").replace(/[\u0300-\u036f]/g,"")
 
 const normalizeID = (keyword)=>{
     let idName = keyword.split(" ").join("_")
@@ -22,8 +22,8 @@ const normalizeID = (keyword)=>{
 }
 
 const normalizeInputText =(text)=> {
-   if(text.includes(">")){text=text.replace(">",`${"\u003e"}`)}
-   if(text.includes("<")){text=text.replace("<",`${"\u003c"}`)}
+    if(text.includes(">")){text=text.replace(">",`${"\u003e"}`)}
+    if(text.includes("<")){text=text.replace("<",`${"\u003c"}`)}
     return text
 }
 
