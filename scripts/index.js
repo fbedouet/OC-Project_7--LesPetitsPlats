@@ -1,6 +1,6 @@
-import {RecipeCard, Dropdown, SearchInput} from './components.js'
-import {getData} from '../data/api.js'
-import{withoutDuplicates} from './utils.js'
+import {RecipeCard, Dropdown, SearchInput} from "./components.js"
+import {getData} from "../data/api.js"
+import{withoutDuplicates} from "./utils.js"
 
 const searchParams = {
     ingredients:[],
@@ -30,7 +30,7 @@ const onSearchMainInput = (searchRequest) => {
 
 const onSelectDropdownItem = (category) =>(item)=>{
     searchParams[category].push(item)
-    dropdownsContent[category] = dropdownsContent[category].filter(elt => elt!=item)
+    dropdownsContent[category] = dropdownsContent[category].filter(elt => elt!==item)
     searchRecipes()
 }
 
@@ -82,12 +82,9 @@ const searchRecipes =()=> {
     // Search ingredients with main input
     let searchInput=[]
     Object.keys(sortedData.recipesByIngredients).forEach(ingredient=>{
-    if(ingredient.indexOf(searchRequest)!==-1){
-        searchInput = searchInput.concat(sortedData.recipesByIngredients[ingredient])
-        // if(ingredient === searchRequest){
-        //     itemToRemoved = searchRequest
-        // }
-    }
+        if(ingredient.indexOf(searchRequest)!==-1){
+            searchInput = searchInput.concat(sortedData.recipesByIngredients[ingredient])
+        }
     })
 
     // Search in description or in title with main input
@@ -113,9 +110,9 @@ const displayNavBar = () =>{
     const ul = document.createElement("ul")
     ul.className = "flex gap-16 font-manrope py-5"
 
-    const ingredientsDropdown = new Dropdown('Ingrédients','ingredientsDropdown',dropdownsContent.ingredients, onSelectDropdownItem("ingredients"))
-    const ustensilesDropdown = new Dropdown('Ustensiles','ustensilesDropdown',dropdownsContent.ustensiles, onSelectDropdownItem("ustensiles"))
-    const appliencesDropdown = new Dropdown('Appareils','appliencesDropdown',dropdownsContent.appliances, onSelectDropdownItem("appliances"))
+    const ingredientsDropdown = new Dropdown("Ingrédients","ingredientsDropdown",dropdownsContent.ingredients, onSelectDropdownItem("ingredients"))
+    const ustensilesDropdown = new Dropdown("Ustensiles","ustensilesDropdown",dropdownsContent.ustensiles, onSelectDropdownItem("ustensiles"))
+    const appliencesDropdown = new Dropdown("Appareils","appliencesDropdown",dropdownsContent.appliances, onSelectDropdownItem("appliances"))
     const p = document.createElement("p")
     p.className = "font-anton text-xl"
 
@@ -199,12 +196,12 @@ const formatItemsKeywordsDiv = (itemName, removeItemFunction)=>{
         return smallLetter[0].toUpperCase()+smallLetter.slice(1)
     }
     const item = document.createElement("div")
-    const removeItemCross = document.createElement('span')
-    item.className ='bg-yellow w-48 h-14 flex justify-between items-center px-4 rounded-lg mb-5'
+    const removeItemCross = document.createElement("span")
+    item.className = "bg-yellow w-48 h-14 flex justify-between items-center px-4 rounded-lg mb-5"
     item.innerText = firstLetterToUpperCase(itemName)
     item.id = itemName
-    removeItemCross.innerText='X'
-    removeItemCross.className ='cursor-pointer'
+    removeItemCross.innerText="X"
+    removeItemCross.className ="cursor-pointer"
     removeItemCross.addEventListener("click",(event)=>{
         removeItemFunction((event.target.parentElement.innerText.slice(0,-2)).toLowerCase()) //slice to remove cross
     })
@@ -228,7 +225,7 @@ const renderRecipes = (searchResult) =>{
     if (document.querySelector(".keyword")){
         document.querySelector(".keyword").remove()
     }
-    const keywordItems = document.createElement('div')
+    const keywordItems = document.createElement("div")
     keywordItems.className = "keyword flex flex-wrap gap-x-5"
     
     //updating selected tag div
@@ -239,7 +236,7 @@ const renderRecipes = (searchResult) =>{
             })
         }
     })
-    document.querySelector('main').appendChild(keywordItems)
+    document.querySelector("main").appendChild(keywordItems)
 
     //render recipes with empty list in searchParams
     const listOfSelectedItems = Object.values(searchParams).reduce((acc,elt)=>{
@@ -260,25 +257,31 @@ const renderRecipes = (searchResult) =>{
 }
 
 const closeDropdownWhenClickedOutside = (event) => {
-    if( event.target.classList[0] === "noclose" || event.target.id === "btn_ingredientsDropdown" || event.target.parentElement.id === "btn_ingredientsDropdown" )
-        {}else{
-            document.getElementById("ingredientsDropdown").classList.add("invisible")
+    if( event.target.classList[0] !== "noclose"
+        & event.target.id !== "btn_ingredientsDropdown"
+        & event.target.parentElement.id !== "btn_ingredientsDropdown"
+    ){
+        document.getElementById("ingredientsDropdown").classList.add("invisible")
     }
 
-    if( event.target.classList[0] === "noclose" || event.target.id === "btn_appliencesDropdown" || event.target.parentElement.id === "btn_appliencesDropdown" )
-        {}else{
-            document.getElementById("appliencesDropdown").classList.add("invisible")
+    if( event.target.classList[0] !== "noclose"
+        & event.target.id !== "btn_appliencesDropdown"
+        & event.target.parentElement.id !== "btn_appliencesDropdown"
+    ){
+        document.getElementById("appliencesDropdown").classList.add("invisible")
     }
 
-    if( event.target.classList[0] === "noclose" || event.target.id === "btn_ustensilesDropdown" || event.target.parentElement.id === "btn_ustensilesDropdown" )
-        {}else{
-            document.getElementById("ustensilesDropdown").classList.add("invisible")
+    if( event.target.classList[0] !== "noclose"
+        & event.target.id !== "btn_ustensilesDropdown"
+        & event.target.parentElement.id !== "btn_ustensilesDropdown"
+    ){
+        document.getElementById("ustensilesDropdown").classList.add("invisible")
     }
 }
 
 function init (){
-    const divSearchInput = document.getElementById('inputSearch')
-    const searchInput = new SearchInput('Rechercher une recette, un ingrédient, ...', '/assets/svg/magnifyingGlass.svg', onSearchMainInput)
+    const divSearchInput = document.getElementById("inputSearch")
+    const searchInput = new SearchInput("Rechercher une recette, un ingrédient, ...", "/assets/svg/magnifyingGlass.svg", onSearchMainInput)
     divSearchInput.appendChild(searchInput.render())
     displayNavBar()
     renderRecipes([])
