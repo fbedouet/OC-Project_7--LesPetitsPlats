@@ -59,8 +59,8 @@ class Dropdown {
         this._magnifyingGlassInputClass = "absolute top-[3.95rem] right-6 *:w-4 *:stroke-grey"
         this._resetCrossBtnInputClass = "absolute top-[4rem] right-12 text-xs text-grey invisible"
         this._selectedItemsClass = "mt-4 pl-4 py-2 bg-yellow truncate"
-        this._menuListClass = "mt-6 text-sm overflow-y-scroll h-52 "
-        this._itemListClass ="ml-4 mb-3 cursor-pointer"
+        this._menuListClass = "mt-6 text-sm overflow-y-scroll max-h-52 "
+        this._itemListClass ="pl-4 py-1 cursor-pointer hover:bg-yellow"
     }
     #removeAccent = strWithAccent => strWithAccent.normalize("NFD").replace(/[\u0300-\u036f]/g,"")
 
