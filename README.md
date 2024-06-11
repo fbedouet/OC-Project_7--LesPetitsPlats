@@ -8,6 +8,7 @@
 ### Release date and code advance
 |Date|Comments  |
 |--|--|
+|``06/06/2024``|Documentation updated with diagram of boolean loop version of algorithm|
 |``29/05/2024``|Creation of the boolean filter search method flowchart|
 | ``08/04/2024`` |Restarting the project using TailWind instead of Bootstrap|
 |``29/03/2024``|Start of main page integration with Bootstrap.|
@@ -29,7 +30,7 @@ flowchart TB
         get(("fa:fa-arrows-rotate Get a database recipe"))
         filter(("filter true query"))
         processing{all query
-                    is true}
+                    is true ?}
         result("fa:fa-database Insert recipe in result array")
         endList{"no more recipe
         in database?"}
@@ -48,7 +49,8 @@ flowchart TB
                         in recipe ?"}
         end
         subgraph testInput["With main input search"]
-            test-query{"Query in store?"}
+            test-query{"Query in store
+                        > 3 characters ?"}
             test-title{"Store query in
                         title of recipe ?"}
             test-desc{"Store query in
@@ -61,8 +63,9 @@ flowchart TB
   end
 
     data -.-> search
-    start("Start") --> action("fa:fa-computer-mouse -Select dropdown item 
-                            -Query in main input")
+    start("Start") --> action("Select dropdown item
+                                with/without
+                                Query in main input")
     action --> get
 
     get -- recipe n --> isIng--true-->test-ing
