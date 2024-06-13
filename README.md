@@ -28,7 +28,6 @@ flowchart TB
   end
  subgraph search["Search function"]
         get(("fa:fa-arrows-rotate Get a database recipe"))
-        filter(("filter true query"))
         processing{all query
                     is true ?}
         result("fa:fa-database Insert recipe in result array")
@@ -47,6 +46,9 @@ flowchart TB
                         in recipe ?"}
             test-app{"Store appliance
                         in recipe ?"}
+            falseIng(Return true)
+            falseUst(Return true)
+            falseApp(Return true)
         end
         subgraph testInput["With main input search"]
             test-query{"Query in store
@@ -59,6 +61,7 @@ flowchart TB
                         text of recipe?"}
             callback{"At least one
                         is true?"}
+            falseQuery(Return true)
         end
   end
 
@@ -73,27 +76,27 @@ flowchart TB
     get -- recipe n --> isApp--true-->test-app
     get -- recipe n -->test-query
 
-    isIng --false-->filter
-    isUst --false-->filter
-    isApp --false-->filter
+    isIng --false-->falseIng--true-->processing
+    isUst --false-->falseUst--true-->processing
+    isApp --false-->falseApp--true-->processing
 
-    test-ing -- true or false --> filter
-    test-ust -- true or false --> filter
-    test-app -- true or false --> filter
+    test-ing -- true or false --> processing
+    test-ust -- true or false --> processing
+    test-app -- true or false --> processing
 
     test-query--true-->test-title
     test-query--true-->test-desc
     test-query--true-->test-ingq
-    test-query--false-->filter
+    test-query--false-->falseQuery--true-->processing
 
     test-title-- true or false-->callback
     test-desc--true or false-->callback
     test-ingq--true or false-->callback
-    callback--true or false-->filter
+    callback--true or false-->processing
 
-    filter-->processing--yes-->result-->endList--yes recipe n+1 -->get
-    processing--no-->endList
-    endList--yes-->display["push result array in display process"]-->finish[End]
+    processing--yes-->result-->endList--yes recipe n+1 -->get
+    processing--_no_-->endList
+    endList--_yes_-->display["push result array in display process"]-->finish[End]
 
 
 

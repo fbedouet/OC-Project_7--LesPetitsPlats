@@ -30,16 +30,18 @@ const searchRecipes =()=> {
     const {ingredients, appliances, ustensiles, searchRequest} = searchParams
     const recipes = sortedData.allRecipes
     const isMatching = recipes.filter(recipe=>{
-        const isMatchingDropdown = ingredients.every(item=>{
+        const isMatchingDropdown = 
+            ingredients.every(item=>{
             return recipe.ingredients.some( ({ingredient}) => ingredient.toLowerCase()===item )
-        })
+            })
             && appliances.every(item=>{
                 return item===recipe.appliance.toLocaleLowerCase()
             })
             && ustensiles.every(item=>{
                 return recipe.ustensils.some(ust=>ust.toLocaleLowerCase() === item)
             })
-        const isMatchingSearchRequest = recipe.name.toLocaleLowerCase().includes(searchRequest)
+        const isMatchingSearchRequest = 
+            recipe.name.toLocaleLowerCase().includes(searchRequest)
             || recipe.description.toLocaleLowerCase().includes(searchRequest)
             || recipe.ingredients.some( ({ingredient})=>{
                 return ingredient.toLocaleLowerCase().includes(searchRequest)
